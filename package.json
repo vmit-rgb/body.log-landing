@@ -1,8 +1,8 @@
 {
-  "name": "phys-activity-tracking-app-landing-page",
+  "name": "body.log-landing",
   "version": "0.9.0",
   "private": true,
-  "description": "Landing page of phys-activity-tracking-app.",
+  "description": "Landing page of body.log.",
   "type": "module",
   "engines": {
     "node": ">=24"

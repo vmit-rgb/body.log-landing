@@ -1,6 +1,6 @@
-# phys-activity-tracking-app-landing-page
+# body.log-landing
 
-Лендинг щоденника руху й самопочуття [phys-activity-tracking-app](https://github.com/vmit-rgb/phys-activity-tracking-app): що це, що варто знати, як встановити, питання, фідбек.
+Лендинг щоденника руху й самопочуття [body.log](https://github.com/vmit-rgb/body.log): що це, що варто знати, як встановити, питання, фідбек.
 
 **Статус:** бета 0.9, тексти — чернетка.
 
