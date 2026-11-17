@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { qrSvg } from './qr';
 
 describe('qrSvg', () => {
-  const svg = qrSvg('https://vmit-rgb.github.io/phys-activity-tracking-app/');
+  const svg = qrSvg('https://vmit-rgb.github.io/body.log/');
 
   it('draws a square SVG with a white quiet zone and black modules', () => {
     expect(svg).toMatch(/^<svg [^>]*viewBox="0 0 (\d+) \1"/);
@@ -12,7 +12,7 @@ describe('qrSvg', () => {
 
   it('is labelled for screen readers with the address it opens', () => {
     expect(svg).toContain('role="img"');
-    expect(svg).toContain('aria-label="QR-код: vmit-rgb.github.io/phys-activity-tracking-app"');
+    expect(svg).toContain('aria-label="QR-код: vmit-rgb.github.io/body.log"');
   });
 
   it('changes when the address changes', () => {
