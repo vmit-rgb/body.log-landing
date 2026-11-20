@@ -15,6 +15,12 @@ describe('qrSvg', () => {
     expect(svg).toContain('aria-label="QR-код: vmit-rgb.github.io/body.log"');
   });
 
+  it('takes the label in the page language', () => {
+    expect(qrSvg('https://vmit-rgb.github.io/body.log/', 'QR code')).toContain(
+      'aria-label="QR code: vmit-rgb.github.io/body.log"',
+    );
+  });
+
   it('changes when the address changes', () => {
     expect(qrSvg('https://example.org/')).not.toBe(svg);
   });

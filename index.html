@@ -10,14 +10,16 @@
     <meta name="description" content="щоденник руху, який підлаштовується під твоє тіло: твої вправи, твої питання про самопочуття, твої шкали. записи лишаються тільки на твоєму телефоні." />
     <title>body.log · щоденник руху, який підлаштовується під твоє тіло</title>
     <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="alternate" hreflang="uk" href="https://vmit-rgb.github.io/body.log-landing/" />
+    <link rel="alternate" hreflang="en" href="https://vmit-rgb.github.io/body.log-landing/en/" />
   </head>
   <body>
     <header class="top">
       <p class="top__title t-body2-bold">body.log</p>
       <nav class="lang" aria-label="мова">
-        <button type="button" class="link-small" aria-current="true" data-lang="uk">укр</button>
+        <a class="link-small" href="./" aria-current="page" data-lang="uk">укр</a>
         <span class="lang__slash t-body2" aria-hidden="true">/</span>
-        <button type="button" class="link-small" aria-disabled="true" data-lang="en" title="англійська версія буде згодом">eng</button>
+        <a class="link-small" href="en/" hreflang="en" lang="en" data-lang="en">eng</a>
       </nav>
     </header>
 
@@ -215,7 +217,7 @@
 
           <div class="step">
             <h3 class="step__title"><span class="step__n" aria-hidden="true">2.</span><span>скопіюй промпт і встав у чат з твоїм ШІ</span></h3>
-            <button type="button" class="button-pill" data-copy-prompt>скопіювати промпт</button>
+            <button type="button" class="button-pill" data-copy-prompt data-toast="промпт ще пишемо, скоро буде">скопіювати промпт</button>
             <p class="t-body2">він розпитає тебе й складе налаштування. їх вставиш у застосунок.</p>
           </div>
 
@@ -302,7 +304,7 @@
             <ul class="list faq__body" role="list">
               <li class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">Нитка зараз працює на Claude (Anthropic). але її памʼять — не в чаті: інструкції, рішення, брифи проєктів і нотатки після кожної сесії лежать у файлах на Google диску. нова розмова читає їх і продовжує з того місця, де зупинилась попередня.</span></li>
               <li class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">тому система не привʼязана до одного ШІ: її задумано так, щоб перейти на інший, просто давши йому ці файли.</span></li>
-              <li class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">у роботі допомагали скіли: <b>neethanwu</b> — для <a class="link-inline" href="https://github.com/neethanwu/ascii-art" target="_blank" rel="noopener noreferrer" data-external>ascii-анімацій</a> і <a class="link-inline" href="https://github.com/unclebob/ub-mode" target="_blank" rel="noopener noreferrer" data-external>ub-mode</a> <b>Роберта К. Мартіна (Uncle Bob)</b> — для чистого коду. ми дуже вдячні авторам!</span></li>
+              <li class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">у роботі допомагали скіли: <b>neethanwu</b> — для <a class="link-inline" href="https://github.com/neethanwu/ascii-art" target="_blank" rel="noopener noreferrer" data-external>ASCII-анімацій</a> і <a class="link-inline" href="https://github.com/unclebob/ub-mode" target="_blank" rel="noopener noreferrer" data-external>ub-mode</a> <b>Роберта К. Мартіна (Uncle Bob)</b> — для чистого коду. ми дуже вдячні авторам!</span></li>
             </ul>
           </details>
           <div class="author-links">

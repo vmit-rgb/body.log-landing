@@ -131,6 +131,7 @@ ol {
 .button-pill {
   display: flex;
   align-items: center;
+  justify-content: center;
   min-height: var(--tap);
   width: 100%;
   padding: 8px 16px;
@@ -141,7 +142,7 @@ ol {
   font-size: 14px;
   font-weight: 600;
   font-stretch: 98%;
-  text-align: left;
+  text-align: center;
 }
 .link-small {
   display: inline-flex;
@@ -423,6 +424,10 @@ summary::-webkit-details-marker {
   width: 106.383%;
   left: -3.191%;
   top: -319.789%;
+}
+/* the English long screenshot is taller (1272 × 10197), its «accessibility» starts 54 px lower */
+.crop--accessibility-en img {
+  top: -322.44%;
 }
 
 /* hero: one screen on phones, three in a row on desktop */
