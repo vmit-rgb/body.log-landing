@@ -11,7 +11,7 @@ export function readableAddress(url: string): string {
  * QR code as a self-contained SVG. Built at build time, so the page
  * makes no request to a QR service.
  */
-export function qrSvg(url: string): string {
+export function qrSvg(url: string, labelPrefix = 'QR-код'): string {
   const qr = qrcode(0, 'M');
   qr.addData(url);
   qr.make();
@@ -23,6 +23,6 @@ export function qrSvg(url: string): string {
       if (qr.isDark(row, col)) path += `M${col + QUIET_ZONE} ${row + QUIET_ZONE}h1v1h-1z`;
     }
   }
-  const label = `QR-код: ${readableAddress(url)}`;
+  const label = `${labelPrefix}: ${readableAddress(url)}`;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" role="img" aria-label="${label}" shape-rendering="crispEdges"><rect width="${size}" height="${size}" fill="#ffffff"/><path d="${path}" fill="#000000"/></svg>`;
 }

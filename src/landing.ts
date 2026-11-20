@@ -68,19 +68,12 @@ function wireToast(doc: Document): ShowToast {
   };
 }
 
+/** The toast text lives in the markup (data-toast), so each language page brings its own. */
 function wirePrompt(doc: Document, showToast: ShowToast): void {
-  required(doc, '[data-copy-prompt]').addEventListener('click', () => {
-    showToast('промпт ще пишемо, скоро буде', ':)');
-  });
-}
-
-/** Buttons that lead nowhere yet (English). */
-function wireInert(doc: Document): void {
-  doc.addEventListener('click', (event) => {
-    if (event.target instanceof Element && event.target.closest('[aria-disabled="true"]')) {
-      event.preventDefault();
-    }
-  });
+  const button = required<HTMLElement>(doc, '[data-copy-prompt]');
+  const text = button.dataset.toast;
+  if (!text) throw new Error('landing markup is missing data-toast on [data-copy-prompt]');
+  button.addEventListener('click', () => showToast(text, ':)'));
 }
 
 /**
@@ -98,5 +91,4 @@ export function initLanding(doc: Document, platform: Platform, isWide = false): 
   wireTabs(doc, platform);
   openAccordions(doc, isWide);
   wirePrompt(doc, wireToast(doc));
-  wireInert(doc);
 }
