@@ -83,8 +83,20 @@ function wireInert(doc: Document): void {
   });
 }
 
-export function initLanding(doc: Document, platform: Platform): void {
+/**
+ * On a wide screen every accordion starts open (Olesia, 2026-11-20);
+ * on a phone only the ones the markup opens.
+ */
+function openAccordions(doc: Document, isWide: boolean): void {
+  if (!isWide) return;
+  for (const details of doc.querySelectorAll<HTMLDetailsElement>('[data-accordion]')) {
+    details.open = true;
+  }
+}
+
+export function initLanding(doc: Document, platform: Platform, isWide = false): void {
   wireTabs(doc, platform);
+  openAccordions(doc, isWide);
   wirePrompt(doc, wireToast(doc));
   wireInert(doc);
 }
