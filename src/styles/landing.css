@@ -65,12 +65,11 @@ ol {
 /* header */
 .top {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   padding: var(--pad-screen-top) var(--pad-screen-x) 0;
 }
 .top__title {
-  display: none;
   color: var(--muted);
 }
 .lang {
@@ -209,9 +208,6 @@ ol {
   background: var(--sunk);
   border: 1px solid var(--line);
 }
-.console__prompt {
-  color: var(--muted);
-}
 
 /* install tabs */
 .tabs {
@@ -235,11 +231,215 @@ ol {
   font-weight: 720;
   text-decoration: none;
 }
+
+/* «як почати»: numbered steps */
+.section--start {
+  gap: var(--gap-section);
+  scroll-margin-top: var(--gap-group);
+}
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-group);
+}
+.step__title {
+  display: flex;
+  gap: var(--gap-items);
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  font-stretch: 90%;
+  line-height: 1.3;
+}
+.step__n {
+  flex: none;
+  color: var(--accent);
+}
 .steps {
   padding-left: 1.6em;
 }
 
-/* faq accordions */
+/* +/− icon shared by every accordion: 48 px box, bars 11 px (faq) or 14 px (feature) */
+.icon-pm {
+  --bar: 11px;
+  position: relative;
+  flex: none;
+  width: var(--tap);
+  height: var(--tap);
+}
+.icon-pm--big {
+  --bar: 14px;
+}
+.icon-pm::before,
+.icon-pm::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+}
+.icon-pm::before {
+  width: var(--bar);
+  height: 2px;
+}
+.icon-pm::after {
+  width: 2px;
+  height: var(--bar);
+  transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+details[open] > summary .icon-pm::after {
+  transform: translate(-50%, -50%) scaleY(0);
+}
+summary {
+  cursor: pointer;
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* «що це і навіщо»: feature accordions, like accordion--group in the app */
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-group);
+}
+.feature {
+  background: var(--surface);
+}
+.feature__trigger {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-items);
+  padding: 0 0 4px 4px;
+}
+.feature__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.feature__title {
+  flex: 1;
+  color: var(--accent);
+  font-size: 24px;
+  font-weight: 500;
+  font-stretch: 90%;
+  text-decoration: underline;
+  text-underline-position: from-font;
+}
+.feature__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-group);
+  margin-top: var(--gap-items);
+  padding: 0 8px 8px;
+}
+.feature__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-group);
+}
+.bullets {
+  padding-left: 21px;
+}
+.emo {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* app screenshots (framed PNG → WebP, invented data) */
+.shot {
+  display: block;
+  height: auto;
+}
+.shots {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--gap-group);
+}
+.shot--tall {
+  width: 220px;
+}
+.shot--pair {
+  width: calc(50% - var(--gap-items));
+  max-width: 171px;
+}
+.shots--settings {
+  flex-direction: column;
+  align-items: center;
+}
+.settings-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-items);
+  width: 100%;
+  padding-bottom: var(--gap-items);
+  background: var(--surface);
+  text-align: center;
+}
+.settings-scroll__frame {
+  width: 220px;
+  height: 472px;
+  margin: 0 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.settings-scroll__frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* crops: a window onto one part of a screenshot, offsets from the Figma layout */
+.crop {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+.crop img {
+  position: absolute;
+  height: auto;
+  max-width: none;
+}
+.crop--dashboard {
+  width: 326px;
+  max-width: 100%;
+  aspect-ratio: 326 / 462;
+}
+.crop--dashboard img {
+  width: 108.696%;
+  left: -4.348%;
+  top: -46.091%;
+}
+.crop--accessibility {
+  width: 300px;
+  max-width: 100%;
+  aspect-ratio: 300 / 513;
+}
+.crop--accessibility img {
+  width: 106.383%;
+  left: -3.191%;
+  top: -319.789%;
+}
+
+/* hero: one screen on phones, three in a row on desktop */
+.hero__screens {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+.hero__main {
+  width: 240px;
+}
+.hero__side {
+  display: none;
+  width: 220px;
+}
+
+/* questions and «як ми працюємо» */
 .faq {
   display: flex;
   flex-direction: column;
@@ -251,11 +451,6 @@ ol {
   gap: 10px;
   min-height: var(--tap);
   padding: 0 0 4px 4px;
-  cursor: pointer;
-  list-style: none;
-}
-.faq__trigger::-webkit-details-marker {
-  display: none;
 }
 .faq__question {
   flex: 1;
@@ -265,32 +460,42 @@ ol {
   text-decoration: underline;
   text-underline-position: from-font;
 }
-.faq__icon {
-  position: relative;
-  flex: none;
-  width: var(--tap);
-  height: var(--tap);
+.faq__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-items);
+  padding: 0 0 8px 4px;
 }
-.faq__icon::before,
-.faq__icon::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  background: var(--accent);
-  transform: translate(-50%, -50%);
+
+/* «хто це робить» */
+.who__title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-micro);
 }
-.faq__icon::before {
-  width: 11px;
-  height: 2px;
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-group);
 }
-.faq__icon::after {
-  width: 2px;
-  height: 11.5px;
-  transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-items);
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
 }
-.faq[open] .faq__icon::after {
-  transform: translate(-50%, -50%) scaleY(0);
+.card__name {
+  margin: 0;
+  color: var(--accent);
+  font-size: 24px;
+  font-weight: 500;
+  font-stretch: 90%;
+  line-height: 1.3;
+}
+.author-links {
+  justify-content: center;
 }
 
 /* desktop card (hidden on phones) */
@@ -364,36 +569,99 @@ ol {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* desktop 1440 layout (Figma 519:3): margins 120, column 720 + sticky QR card 400 */
 @media (min-width: 1024px) {
   .top {
-    justify-content: space-between;
-    padding: 40px clamp(24px, 8.33vw, 120px) 0;
-  }
-  .top__title {
-    display: block;
+    padding: var(--pad-screen-top) clamp(24px, 8.33vw, 120px) 0;
   }
   .columns {
     display: flex;
-    gap: clamp(48px, 8.33vw, 120px);
+    gap: clamp(40px, 5.56vw, 80px);
     align-items: flex-start;
     padding: 64px clamp(24px, 8.33vw, 120px) 0;
   }
   .main {
-    flex: 0 1 680px;
+    flex: 0 1 720px;
+    min-width: 0;
+    gap: 120px;
   }
   .section {
     padding: 0;
+  }
+  .section--hero {
+    gap: var(--gap-section);
   }
   .hero__title {
     font-size: 50px;
     font-weight: 660;
     font-stretch: 62%;
   }
+  .hero__screens {
+    padding-top: var(--gap-section);
+  }
+  .hero__main,
+  .hero__side {
+    display: block;
+    width: calc((100% - 60px) / 3);
+    max-width: 220px;
+  }
+  .hero__main {
+    order: 2;
+  }
+  .hero__side:last-child {
+    order: 3;
+  }
+  /* features: text on the left, screenshots on the right */
+  .feature__body:not(.feature__body--stack) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 40px;
+  }
+  .feature__body:not(.feature__body--stack) > .feature__text {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .feature__body:not(.feature__body--stack) > .shots {
+    flex: none;
+  }
+  .feature__body--stack {
+    gap: 40px;
+  }
+  .shots--settings {
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+  .shots--settings > .shot--tall {
+    margin-top: 12px;
+  }
+  .settings-scroll {
+    width: 349px;
+    background: none;
+  }
+  .shot--pair {
+    width: 171px;
+  }
+  .step__hint {
+    display: none;
+  }
+  .cards {
+    flex-direction: row;
+    gap: var(--gap-section);
+  }
+  .card {
+    flex: 1 1 0;
+  }
+  .author-links {
+    justify-content: flex-start;
+  }
   .side {
     display: block;
-    flex: 1 1 0;
+    flex: 0 1 400px;
     position: sticky;
     top: 40px;
+  }
+  .phone-card .qr {
+    align-self: center;
   }
   .footer {
     padding: 16px clamp(24px, 8.33vw, 120px) 24px;

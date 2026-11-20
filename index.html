@@ -7,13 +7,13 @@
     <meta name="theme-color" content="#161616" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#f6f5f7" media="(prefers-color-scheme: light)" />
     <meta name="referrer" content="no-referrer" />
-    <meta name="description" content="щоденник руху й самопочуття. записи лишаються тільки на твоєму телефоні." />
-    <title>щоденник руху й самопочуття · body.log</title>
+    <meta name="description" content="щоденник руху, який підлаштовується під твоє тіло: твої вправи, твої питання про самопочуття, твої шкали. записи лишаються тільки на твоєму телефоні." />
+    <title>body.log · щоденник руху, який підлаштовується під твоє тіло</title>
     <link rel="icon" href="/favicon.png" type="image/png" />
   </head>
   <body>
     <header class="top">
-      <p class="top__title t-body2-bold">щоденник руху й самопочуття</p>
+      <p class="top__title t-body2-bold">body.log</p>
       <nav class="lang" aria-label="мова">
         <button type="button" class="link-small" aria-current="true" data-lang="uk">укр</button>
         <span class="lang__slash t-body2" aria-hidden="true">/</span>
@@ -24,102 +24,291 @@
     <div class="columns">
       <main class="main">
         <section class="section section--hero" aria-labelledby="hero-title">
-          <h1 id="hero-title" class="hero__title">щоденник руху й самопочуття</h1>
-          <p class="t-body1">розминка, тренування, рух і те, як почувається тіло, — в одному місці. без тиску й без сповіщень. записи лишаються тільки на твоєму телефоні.</p>
-          <a class="button-primary" href="%VITE_APP_URL%" data-app-link>встановити на телефон</a>
+          <h1 id="hero-title" class="hero__title">щоденник руху, який підлаштовується під твоє тіло</h1>
+          <p class="t-body1">твої вправи, твої питання про самопочуття, твої шкали. налаштовує твій ШІ за одну розмову, а змінити можна все й будь-коли.</p>
+          <p class="t-body1">безкоштовно, без реєстрації</p>
+          <a class="button-primary" href="#start">як почати</a>
+          <div class="hero__screens">
+            <img class="shot hero__side" src="/screens/2-morning-checkin.webp" width="480" height="1030" alt="екран самопочуття зранку: повзунок болю в спині, тиск, пульс і нотатка" loading="lazy" decoding="async" />
+            <img class="shot hero__main" src="/screens/1-dashboard.webp" width="480" height="1030" alt="головний екран body.log: цей тиждень, середнє за 7 днів із графіком і календар" fetchpriority="high" decoding="async" />
+            <img class="shot hero__side" src="/screens/5-workout.webp" width="480" height="1030" alt="екран тренування: підходи з вагою, планка із секундоміром і «минулого разу»" loading="lazy" decoding="async" />
+          </div>
         </section>
 
-        <section class="section" aria-labelledby="features-title">
-          <h2 id="features-title" class="t-h4">що тут є</h2>
-          <ul class="list" role="list">
-            <li class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">розминка й тренування: рівні, підходи, вага, секундомір</span></li>
-            <li class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">самопочуття поруч: біль по зонах, запаморочення, тиск, пульс, нотатки</span></li>
-            <li class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">календар, історія днів і пошук у нотатках</span></li>
-            <li class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">тижнева ціль без тиску й без сповіщень</span></li>
-            <li class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">налаштовує все твій ШІ: ти розповідаєш, він складає налаштування</span></li>
-            <li class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">копія всіх даних одним файлом, експорт у PDF і JSON</span></li>
-            <li class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">темна й світла тема, налаштування доступності</span></li>
-          </ul>
+        <section class="section" aria-labelledby="about-title">
+          <h2 id="about-title" class="t-h4">що це і навіщо</h2>
+          <p class="t-body1">body.log не зроблено під одну людину чи одну програму. хтось вносить вправи від фізіотерапевта й дивиться, як тіло на них відповідає. хтось цілий день сидить за компʼютером і між задачами розминає шию й спину. а хтось просто рухається вдома у своєму темпі — без спортзалу й без рекордів.</p>
+          <p class="t-body1">це працює, бо налаштовується майже все: які вправи, які питання про самопочуття, що й коли рахувати. тож один застосунок складається під різні тіла, різні програми й різні дні.</p>
+
+          <div class="features">
+            <details class="feature" open data-accordion>
+              <summary class="feature__trigger">
+                <span class="feature__row"><span class="feature__title">під тебе, а не навпаки</span><span class="icon-pm icon-pm--big" aria-hidden="true"></span></span>
+                <span class="feature__meta t-body1">твої вправи, твої питання про самопочуття, твої шкали й цілі</span>
+              </summary>
+              <div class="feature__body feature__body--stack">
+                <div class="feature__text t-body2">
+                  <ul class="bullets">
+                    <li>рівні ранкової розминки,</li>
+                    <li>зони денної,</li>
+                    <li>тренування,</li>
+                    <li>групи вправ,</li>
+                    <li>рух у км, хвилинах чи кроках.</li>
+                  </ul>
+                  <p>питання про самопочуття на кожен момент дня:</p>
+                  <ul class="bullets">
+                    <li>повзунки з твоїми підписами,</li>
+                    <li>так / ні,</li>
+                    <li>числа,</li>
+                    <li>нотатки.</li>
+                    <li>тижнева ціль.</li>
+                  </ul>
+                  <p>11 кольорів, твої підбадьорливі фрази.</p>
+                  <p>змінити можна будь-коли — гнучкі налаштування це дозволяють.</p>
+                </div>
+                <div class="shots shots--settings">
+                  <img class="shot shot--tall" src="/screens/7-settings.webp" width="480" height="1030" alt="налаштування самопочуття: повзунки з власними підписами і коли питати" loading="lazy" decoding="async" />
+                  <div class="settings-scroll">
+                    <p class="t-body3 muted settings-scroll__caption" id="settings-scroll-caption">рамка гортається: усередині всі налаштування</p>
+                    <div class="settings-scroll__frame" tabindex="0" role="region" aria-labelledby="settings-scroll-caption">
+                      <img src="/screens/8-settings-long.webp" width="640" height="5081" alt="усі налаштування body.log одним довгим екраном: самопочуття, ранкова розминка, акцентний колір, доступність" loading="lazy" decoding="async" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="feature" data-accordion>
+              <summary class="feature__trigger">
+                <span class="feature__row"><span class="feature__title">рух і самопочуття в одному записі</span><span class="icon-pm icon-pm--big" aria-hidden="true"></span></span>
+                <span class="feature__meta t-body1">видно, як тіло відповідає на вправу</span>
+              </summary>
+              <div class="feature__body">
+                <div class="feature__text t-body2">
+                  <p>зранку, після розминки, після тренування, ввечері — питання ті, які обереш ти: біль, затерплість, тиск, пульс (є таймер), нотатка. поруч підходи, вага, секундомір і «минулого разу».</p>
+                </div>
+                <div class="shots">
+                  <img class="shot shot--pair" src="/screens/2-morning-checkin.webp" width="480" height="1030" alt="самопочуття зранку: біль, сон, тиск, пульс із таймером, нотатка" loading="lazy" decoding="async" />
+                  <img class="shot shot--pair" src="/screens/5-workout.webp" width="480" height="1030" alt="тренування: підходи, вага, секундомір і «минулого разу»" loading="lazy" decoding="async" />
+                </div>
+              </div>
+            </details>
+
+            <details class="feature" data-accordion>
+              <summary class="feature__trigger">
+                <span class="feature__row"><span class="feature__title">твоя програма за одну розмову</span><span class="icon-pm icon-pm--big" aria-hidden="true"></span></span>
+                <span class="feature__meta t-body1">налаштовує твій ШІ. або почни без ШІ, на прикладах</span>
+              </summary>
+              <div class="feature__body">
+                <div class="feature__text t-body2">
+                  <p>скопіюй промпт → ШІ розпитає тебе й складе налаштування → встав їх у застосунок.</p>
+                  <p>маєш вправи від фізіотерапевта? передай їх ШІ — і в застосунку буде саме твоя програма <b class="emo">&lt;3</b>.</p>
+                </div>
+                <div class="shots">
+                  <img class="shot shot--pair" src="/screens/3-morning-warmup.webp" width="480" height="1030" alt="ранкова розминка з рівнями: мінімум, повна, коли болить" loading="lazy" decoding="async" />
+                  <img class="shot shot--pair" src="/screens/4-daytime-warmup.webp" width="480" height="1030" alt="денна розминка: повзунок затерплості й вибір зони" loading="lazy" decoding="async" />
+                </div>
+              </div>
+            </details>
+
+            <details class="feature" data-accordion>
+              <summary class="feature__trigger">
+                <span class="feature__row"><span class="feature__title">видно, як змінюється</span><span class="icon-pm icon-pm--big" aria-hidden="true"></span></span>
+                <span class="feature__meta t-body1">календар, середнє, пошук, PDF для лікаря</span>
+              </summary>
+              <div class="feature__body">
+                <div class="feature__text t-body2">
+                  <p>крапки в календарі — які розділи були в день. середнє за 7 днів чи за обраний період, з графіком. пошук у нотатках: коли боліло і що тоді було зроблено.</p>
+                  <p>можна експортувати PDF, щоб показати лікарю чи фізіотерапевту.</p>
+                </div>
+                <div class="shots">
+                  <div class="crop crop--dashboard">
+                    <img src="/screens/1-dashboard.webp" width="480" height="1030" alt="середнє за 7 днів із графіком болю в спині і календар листопада" loading="lazy" decoding="async" />
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <details class="feature" data-accordion>
+              <summary class="feature__trigger">
+                <span class="feature__row"><span class="feature__title">без тиску</span><span class="icon-pm icon-pm--big" aria-hidden="true"></span></span>
+                <span class="feature__meta t-body1">без сповіщень і стріків. пропущений день — просто день <b class="emo">:)</b></span>
+              </summary>
+              <div class="feature__body feature__body--stack">
+                <div class="feature__text t-body2">
+                  <p>застосунок не смикає й не рахує «серії». тижнева ціль — тільки якщо хочеш: скільки днів і які розділи рахуються.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="feature" data-accordion>
+              <summary class="feature__trigger">
+                <span class="feature__row"><span class="feature__title">записи тільки на твоєму телефоні</span><span class="icon-pm icon-pm--big" aria-hidden="true"></span></span>
+                <span class="feature__meta t-body1">без реєстрації, без реклами, працює без інтернету</span>
+              </summary>
+              <div class="feature__body feature__body--stack">
+                <div class="feature__text t-body2">
+                  <p>застосунок нікуди не відправляє записи. копію одним файлом можна покласти куди хочеш. код публічний: будь-хто може переглянути його на <a class="link-inline" href="https://github.com/vmit-rgb/body.log" target="_blank" rel="noopener noreferrer" data-external>GitHub</a> і перевірити, що записи нікуди не відправляються.</p>
+                </div>
+              </div>
+            </details>
+
+            <details class="feature" data-accordion>
+              <summary class="feature__trigger">
+                <span class="feature__row"><span class="feature__title">зручно, навіть коли руки не слухаються</span><span class="icon-pm icon-pm--big" aria-hidden="true"></span></span>
+                <span class="feature__meta t-body1">над доступністю працювали з першого дня, з аудитом за WCAG 2.2 AA</span>
+              </summary>
+              <div class="feature__body">
+                <div class="feature__text t-body2">
+                  <p>без довгих натискань. анімації, вібрацію й звук можна вимкнути, а повідомлення — зробити такими, що не зникають самі. є світла тема для вулиці.</p>
+                  <p>якось були зайняті руки, тож секундомір запускала й зупиняла носом — працює.</p>
+                  <p>люди з інвалідністю ще не тестували — якщо щось незручно, напиши, відгуки дуже цінні.</p>
+                </div>
+                <div class="shots">
+                  <div class="crop crop--accessibility">
+                    <img src="/screens/8-settings-long.webp" width="640" height="5081" alt="налаштування доступності: розмір тексту й зон натискання, панель під іншу руку, без анімацій, вібрації й звуку" loading="lazy" decoding="async" />
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <p class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">а ще щомісяця в шапці нова ASCII-сцена <b class="emo">:3</b></span></p>
         </section>
 
         <section class="section" aria-labelledby="warnings-title">
-          <h2 id="warnings-title" class="t-h4">що варто знати</h2>
           <div class="console">
-            <p class="console__prompt t-body2-bold">$ cat warnings.txt</p>
+            <h2 id="warnings-title" class="t-h4">що варто знати</h2>
             <ul class="list list--console" role="list">
-              <li class="list__row"><span class="marker marker--warn" aria-label="важливо">[!]</span><span class="t-body2">це щоденник, а не лікар. застосунок нічого не діагностує й нічого не радить. якщо щось болить — звернися до лікаря.</span></li>
-              <li class="list__row"><span class="marker marker--warn" aria-label="важливо">[!]</span><span class="t-body2">вправи підбирає твій ШІ разом з тобою — це не програма від фахівця. краще, коли вправи даєш ти: маєш програму від фізіотерапевта чи лікаря — передай її своєму ШІ &lt;3</span></li>
-              <li class="list__row"><span class="marker marker--accent" aria-label="про посилання">[*]</span><span class="t-body2">посилання на відео й пояснення дає ШІ. він може помилитися або вигадати адресу. такі посилання позначені *, перевір їх, перш ніж повторювати вправу.</span></li>
-              <li class="list__row"><span class="marker marker--muted" aria-label="до відома">[i]</span><span class="t-body2">розмова з ШІ — це розмова про здоровʼя. у налаштуваннях свого ШІ можна вимкнути навчання на твоїх розмовах.</span></li>
-              <li class="list__row"><span class="marker marker--muted" aria-label="до відома">[i]</span><span class="t-body2">застосунок нікуди не відправляє твої дані: записи зберігаються тільки на цьому телефоні.</span></li>
-              <li class="list__row"><span class="marker marker--muted" aria-label="до відома">[i]</span><span class="t-body2">один телефон. записи не переходять на інші пристрої самі — щоб переїхати, збережи копію й віднови її на новому.</span></li>
-              <li class="list__row"><span class="marker marker--muted" aria-label="до відома">[i]</span><span class="t-body2">розмова з ШІ займає час. можна вийти й повернутися — застосунок відкриється одразу на полі для вставки.</span></li>
+              <li class="list__row"><span class="marker marker--warn" aria-label="важливо">[!]</span><span class="t-body2">це щоденник, а не лікар: застосунок нічого не діагностує й не радить. якщо щось болить — до лікаря.</span></li>
+              <li class="list__row"><span class="marker marker--warn" aria-label="важливо">[!]</span><span class="t-body2">вправи підбирає твій ШІ разом з тобою — це не програма від фахівця. краще, коли вправи даєш ти <b class="emo">&lt;3</b></span></li>
+              <li class="list__row"><span class="marker marker--accent" aria-label="про посилання">[*]</span><span class="t-body2">посилання на відео й пояснення дає ШІ, він може помилитися. вони позначені *, перевір їх.</span></li>
+              <li class="list__row"><span class="marker marker--muted" aria-label="до відома">[i]</span><span class="t-body2">записи живуть на одному телефоні: збережи копію, щоб не загубити їх.</span></li>
+              <li class="list__row"><span class="marker marker--muted" aria-label="до відома">[i]</span><span class="t-body2">синхронізації з годинниками й фітнес-трекерами немає: усе записується вручну.</span></li>
+              <li class="list__row"><span class="marker marker--muted" aria-label="до відома">[i]</span><span class="t-body2">сповіщень на телефон не приходить, нагадувань немає: відкриваєш, коли хочеш.</span></li>
+              <li class="list__row"><span class="marker marker--muted" aria-label="до відома">[i]</span><span class="t-body2">це бета, яку роблять двоє — Олеся й Нитка / AI: щось може зламатися. побачиш — напиши у відгук.</span></li>
             </ul>
           </div>
         </section>
 
-        <section class="section" id="install" aria-labelledby="install-title">
-          <h2 id="install-title" class="t-h4">встанови на телефон</h2>
-          <div class="tabs" role="tablist" aria-label="твій телефон">
-            <button type="button" class="tab" role="tab" id="tab-android" aria-controls="steps-android" aria-selected="true" data-tab="android">андроїд</button>
-            <button type="button" class="tab" role="tab" id="tab-iphone" aria-controls="steps-iphone" aria-selected="false" data-tab="iphone" tabindex="-1">айфон</button>
-          </div>
-          <ol class="steps t-body1" id="steps-android" role="tabpanel" aria-labelledby="tab-android">
-            <li>відкрий <a class="link-inline" href="%VITE_APP_URL%" data-app-link>застосунок</a> у chrome.</li>
-            <li>меню ⋮ → «встановити застосунок».</li>
-            <li>відкрий застосунок з головного екрана — далі все там.</li>
-          </ol>
-          <ol class="steps t-body1" id="steps-iphone" role="tabpanel" aria-labelledby="tab-iphone" hidden>
-            <li>відкрий <a class="link-inline" href="%VITE_APP_URL%" data-app-link>застосунок</a> у safari.</li>
-            <li>«поділитися» → «на початковий екран».</li>
-            <li>відкрий застосунок з головного екрана й налаштовуй уже там, не в safari.</li>
-          </ol>
-          <p class="t-body3 muted">телефон визначено автоматично. якщо не той — перемкни.</p>
-        </section>
+        <section class="section section--start" id="start" aria-labelledby="start-title">
+          <h2 id="start-title" class="t-h4">як почати</h2>
 
-        <section class="section" aria-labelledby="prompt-title">
-          <h2 id="prompt-title" class="t-h4">промпт для ШІ</h2>
-          <p class="t-body1">головна кнопка є в самому застосунку, на першому екрані. якщо зручніше почати звідси — скопіюй тут.</p>
-          <button type="button" class="button-pill" data-copy-prompt>скопіювати промпт</button>
-          <p class="t-body3 muted">встав його в чат зі своїм ШІ — він розпитає тебе й складе налаштування.</p>
+          <div class="step">
+            <h3 class="step__title"><span class="step__n" aria-hidden="true">1.</span><span>встанови на телефон</span></h3>
+            <div class="tabs" role="tablist" aria-label="твій телефон">
+              <button type="button" class="tab" role="tab" id="tab-android" aria-controls="steps-android" aria-selected="true" data-tab="android">андроїд</button>
+              <button type="button" class="tab" role="tab" id="tab-iphone" aria-controls="steps-iphone" aria-selected="false" data-tab="iphone" tabindex="-1">айфон</button>
+            </div>
+            <ol class="steps t-body1" id="steps-android" role="tabpanel" aria-labelledby="tab-android">
+              <li>відкрий <a class="link-inline" href="%VITE_APP_URL%" data-app-link>застосунок</a> у chrome.</li>
+              <li>меню ⋮ → «встановити застосунок».</li>
+              <li>відкрий застосунок з головного екрана — далі все там.</li>
+            </ol>
+            <ol class="steps t-body1" id="steps-iphone" role="tabpanel" aria-labelledby="tab-iphone" hidden>
+              <li>відкрий <a class="link-inline" href="%VITE_APP_URL%" data-app-link>застосунок</a> у safari.</li>
+              <li>«поділитися» → «на початковий екран».</li>
+              <li>відкрий застосунок з головного екрана й налаштовуй уже там, не в safari.</li>
+            </ol>
+            <p class="t-body3 muted step__hint">телефон визначено автоматично. якщо не той — перемкни.</p>
+          </div>
+
+          <div class="step">
+            <h3 class="step__title"><span class="step__n" aria-hidden="true">2.</span><span>скопіюй промпт і встав у чат з твоїм ШІ</span></h3>
+            <button type="button" class="button-pill" data-copy-prompt>скопіювати промпт</button>
+            <p class="t-body2">він розпитає тебе й складе налаштування. їх вставиш у застосунок.</p>
+          </div>
+
+          <div class="step">
+            <h3 class="step__title"><span>або почни без ШІ</span></h3>
+            <p class="t-body2">на першому екрані є «почати без ШІ»: застосунок відкриється з прикладами, а все інше зміниш у налаштуваннях.</p>
+          </div>
         </section>
 
         <section class="section section--faq" aria-labelledby="faq-title">
           <h2 id="faq-title" class="t-h4">питання</h2>
-          <details class="faq" open>
-            <summary class="faq__trigger"><span class="faq__question">хто бачить мої записи?</span><span class="faq__icon" aria-hidden="true"></span></summary>
-            <p class="t-body2">тільки ти. застосунок нікуди їх не відправляє. сайт лежить на GitHub Pages, а GitHub, як і більшість хостингів, записує IP-адреси відвідувачів для безпеки. фідбек іде через гугл-форму: те, що ти там напишеш, бачать Олеся і гугл.</p>
+          <details class="faq" open data-accordion>
+            <summary class="faq__trigger"><span class="faq__question">хто бачить мої записи?</span><span class="icon-pm" aria-hidden="true"></span></summary>
+            <div class="faq__body t-body2">
+              <p>тільки ти. застосунок нікуди їх не відправляє. сайт лежить на GitHub Pages, а GitHub, як і більшість хостингів, записує IP-адреси відвідувачів для безпеки.</p>
+              <p>відгук іде через гугл-форму: те, що ти там напишеш, бачимо ми з Ниткою / AI, Google і Anthropic.</p>
+            </div>
           </details>
-          <details class="faq">
-            <summary class="faq__trigger"><span class="faq__question">який ШІ підійде?</span><span class="faq__icon" aria-hidden="true"></span></summary>
-            <p class="t-body2">будь-який чат зі ШІ, з яким тобі зручно говорити, навіть безкоштовний. промпт пояснює все, що треба, тож доступ до інтернету йому не потрібен.</p>
+          <details class="faq" data-accordion>
+            <summary class="faq__trigger"><span class="faq__question">який ШІ підійде?</span><span class="icon-pm" aria-hidden="true"></span></summary>
+            <div class="faq__body t-body2"><p>будь-який чат зі ШІ, з яким тобі зручно говорити, навіть безкоштовний. промпт пояснює все, що треба. перевірено з безкоштовними ChatGPT, Claude, Gemini, DeepSeek і Kimi (19.11.2026).</p></div>
           </details>
-          <details class="faq">
-            <summary class="faq__trigger"><span class="faq__question">а якщо в мене немає ШІ?</span><span class="faq__icon" aria-hidden="true"></span></summary>
-            <p class="t-body2">на першому екрані застосунку є «почати без ШІ». він відкриється з прикладами замість твоїх вправ, а все інше можна змінити в налаштуваннях.</p>
+          <details class="faq" data-accordion>
+            <summary class="faq__trigger"><span class="faq__question">на чому працює?</span><span class="icon-pm" aria-hidden="true"></span></summary>
+            <div class="faq__body t-body2"><p>застосунок зроблено для телефона. на андроїді встановлюй з chrome (з firefox чи samsung internet <b>на телефонах samsung</b> теж має вийти), на айфоні — з safari (на нових айфонах також з chrome, firefox чи edge). на компʼютері він відкриється у вкладці браузера: подивитися можна, але записи зникнуть, щойно закриєш вкладку.</p></div>
           </details>
-          <details class="faq">
-            <summary class="faq__trigger"><span class="faq__question">як переїхати на новий телефон?</span><span class="faq__icon" aria-hidden="true"></span></summary>
-            <p class="t-body2">на старому телефоні збережи копію в налаштуваннях і перенеси файл на новий. там встанови застосунок і на першому екрані натисни «відновити з копії».</p>
+          <details class="faq" data-accordion>
+            <summary class="faq__trigger"><span class="faq__question">а що з приватністю розмови з ШІ?</span><span class="icon-pm" aria-hidden="true"></span></summary>
+            <div class="faq__body t-body2"><p>у розмові ти самостійно розповідаєш ШІ про себе, тож у його налаштуваннях краще вимкнути навчання на розмовах. DeepSeek і Kimi теж складають налаштування, але це китайські компанії, і дані можуть зберігатися в Китаї.</p></div>
           </details>
-          <details class="faq">
-            <summary class="faq__trigger"><span class="faq__question">чому немає сповіщень?</span><span class="faq__icon" aria-hidden="true"></span></summary>
-            <p class="t-body2">так задумано: застосунок не смикає тебе й не тисне. якщо хочеш нагадування, постав повторювану подію у своєму календарі.</p>
+          <details class="faq" data-accordion>
+            <summary class="faq__trigger"><span class="faq__question">розмова з ШІ — це довго?</span><span class="icon-pm" aria-hidden="true"></span></summary>
+            <div class="faq__body t-body2"><p>розмова з ШІ займає час. можна вийти й повернутися — застосунок відкриється одразу на полі для вставки.</p></div>
+          </details>
+          <details class="faq" data-accordion>
+            <summary class="faq__trigger"><span class="faq__question">застосунок не приймає налаштування від ШІ — що робити?</span><span class="icon-pm" aria-hidden="true"></span></summary>
+            <div class="faq__body t-body2"><p>натисни «скопіювати для ШІ» й встав це в той самий чат — ШІ виправить. потім встав його нову відповідь. якщо застосунок не прочитав лише кілька полів, можна «продовжити без цього». налаштування російською застосунок не приймає.</p></div>
+          </details>
+          <details class="faq" data-accordion>
+            <summary class="faq__trigger"><span class="faq__question">а якщо в мене немає ШІ?</span><span class="icon-pm" aria-hidden="true"></span></summary>
+            <div class="faq__body t-body2"><p>на першому екрані застосунку є «почати без ШІ». він відкриється з прикладами замість твоїх вправ, а все інше можна змінити в налаштуваннях.</p></div>
+          </details>
+          <details class="faq" data-accordion>
+            <summary class="faq__trigger"><span class="faq__question">як переїхати на новий телефон?</span><span class="icon-pm" aria-hidden="true"></span></summary>
+            <div class="faq__body t-body2"><p>на старому телефоні збережи копію в налаштуваннях і перенеси файл на новий. там встанови застосунок і на першому екрані натисни «відновити з копії».</p></div>
+          </details>
+          <details class="faq" data-accordion>
+            <summary class="faq__trigger"><span class="faq__question">як стерти свої дані?</span><span class="icon-pm" aria-hidden="true"></span></summary>
+            <div class="faq__body t-body2"><p>налаштування → «видалення». можна видалити тільки записи або стерти все разом з налаштуваннями. спершу збережи копію, якщо записи ще знадобляться.</p></div>
+          </details>
+          <details class="faq" data-accordion>
+            <summary class="faq__trigger"><span class="faq__question">чому немає сповіщень?</span><span class="icon-pm" aria-hidden="true"></span></summary>
+            <div class="faq__body t-body2"><p>так задумано: застосунок не смикає тебе й не тисне. якщо хочеш нагадування, постав повторювану подію у своєму календарі.</p></div>
+          </details>
+          <details class="faq" data-accordion>
+            <summary class="faq__trigger"><span class="faq__question">скільки коштує?</span><span class="icon-pm" aria-hidden="true"></span></summary>
+            <div class="faq__body t-body2"><p>аніскілечки. без реклами й підписок.</p></div>
           </details>
         </section>
 
         <section class="section" aria-labelledby="feedback-title">
-          <h2 id="feedback-title" class="t-h4">фідбек</h2>
-          <p class="t-body1">що зручно, а що ні, як пройшла розмова з ШІ, чого бракує — напиши як є. форма анонімна, жодне поле не обовʼязкове. тільки не пиши, будь ласка, медичних подробиць.</p>
-          <a class="link-small" href="https://docs.google.com/forms/d/e/1FAIpQLSff2YaIvCN_g1dgKyqziqDTOQf4xPDlzDmwjEfTByY70w4SIg/viewform" target="_blank" rel="noopener noreferrer" data-feedback-link>залишити фідбек</a>
+          <h2 id="feedback-title" class="t-h4">відгук</h2>
+          <p class="t-body1">що зручно, а що ні, як пройшла розмова з ШІ, чого бракує — напиши як є. форма анонімна, жодне поле не обовʼязкове.</p>
+          <a class="button-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSff2YaIvCN_g1dgKyqziqDTOQf4xPDlzDmwjEfTByY70w4SIg/viewform" target="_blank" rel="noopener noreferrer" data-feedback-link>залишити відгук</a>
         </section>
 
         <section class="section" aria-labelledby="author-title">
-          <h2 id="author-title" class="t-h4">хто це робить</h2>
-          <p class="t-body1">Олеся, дизайнерка. застосунок виріс з її власного щоденника тренувань.</p>
+          <div class="who__title">
+            <h2 id="author-title" class="t-h4">хто це робить</h2>
+            <p class="t-body2 muted">(Олеся + Нитка / AI)</p>
+          </div>
+          <div class="cards">
+            <div class="card">
+              <h3 class="card__name">Олеся</h3>
+              <p class="t-body2">дизайнерка з Києва: архітекторка проєкту body.log.<br />проєкт почався з її власної домашньої програми, а згодом виріс до придатного для користування продукту.<br />користується ним сама з жовтня 2026.</p>
+            </div>
+            <div class="card">
+              <h3 class="card__name">Нитка / AI</h3>
+              <p class="t-body2">ШІ-помічниця Олесі. пише код, тести й чернетки текстів, робить аудити й сперечається, коли не згодна. імʼя вибрала сама: щоб нитка між розмовами не рвалася.</p>
+            </div>
+          </div>
+          <details class="faq" data-accordion>
+            <summary class="faq__trigger"><span class="faq__question">як ми працюємо</span><span class="icon-pm" aria-hidden="true"></span></summary>
+            <ul class="list faq__body" role="list">
+              <li class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">Нитка зараз працює на Claude (Anthropic). але її памʼять — не в чаті: інструкції, рішення, брифи проєктів і нотатки після кожної сесії лежать у файлах на Google диску. нова розмова читає їх і продовжує з того місця, де зупинилась попередня.</span></li>
+              <li class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">тому система не привʼязана до одного ШІ: її задумано так, щоб перейти на інший, просто давши йому ці файли.</span></li>
+              <li class="list__row"><span class="marker marker--accent" aria-hidden="true">&gt;</span><span class="t-body2">у роботі допомагали скіли: <b>neethanwu</b> — для <a class="link-inline" href="https://github.com/neethanwu/ascii-art" target="_blank" rel="noopener noreferrer" data-external>ascii-анімацій</a> і <a class="link-inline" href="https://github.com/unclebob/ub-mode" target="_blank" rel="noopener noreferrer" data-external>ub-mode</a> <b>Роберта К. Мартіна (Uncle Bob)</b> — для чистого коду. ми дуже вдячні авторам!</span></li>
+            </ul>
+          </details>
           <div class="author-links">
             <a class="link-small" href="https://www.linkedin.com/in/kishtanovao/" target="_blank" rel="noopener noreferrer" data-author-link>linkedin</a>
             <a class="link-small" href="https://www.behance.net/7c29d01a" target="_blank" rel="noopener noreferrer" data-author-link>behance</a>
+            <a class="link-small" href="https://github.com/vmit-rgb/body.log" target="_blank" rel="noopener noreferrer" data-author-link>код на github</a>
           </div>
         </section>
       </main>
@@ -127,16 +316,15 @@
       <aside class="side" aria-labelledby="phone-title">
         <div class="phone-card">
           <h2 id="phone-title" class="t-h4">відкрий на телефоні</h2>
-          <p class="t-body1">застосунок живе на телефоні. наведи камеру на код — і встанови його звідти.</p>
           <div class="qr"><!--app-qr--></div>
-          <p class="t-body3 muted">або відкрий адресу на телефоні: %APP_ADDRESS%</p>
+          <p class="t-body3 muted">або відкрий адресу на телефоні:<br />%APP_ADDRESS%</p>
           <p class="t-body3 muted">на компʼютері застосунок не встановлюється: він для телефона.</p>
         </div>
       </aside>
     </div>
 
     <footer class="footer t-body3">
-      <p class="muted">бета 0.9</p>
+      <p class="muted">body.log · бета 1.0</p>
       <p class="muted">© 2026 (Олеся + Нитка / AI) · усі права захищено</p>
     </footer>
 
