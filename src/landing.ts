@@ -74,7 +74,7 @@ function wirePrompt(doc: Document, showToast: ShowToast): void {
   });
 }
 
-/** Buttons that lead nowhere yet (feedback form, author links, English). */
+/** Buttons that lead nowhere yet (English). */
 function wireInert(doc: Document): void {
   doc.addEventListener('click', (event) => {
     if (event.target instanceof Element && event.target.closest('[aria-disabled="true"]')) {
