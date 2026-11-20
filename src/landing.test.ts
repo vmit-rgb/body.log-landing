@@ -94,9 +94,16 @@ describe('links', () => {
     }
   });
 
+  it('opens the feedback form in a new tab', () => {
+    const link = document.querySelector<HTMLAnchorElement>('[data-feedback-link]')!;
+    expect(link.getAttribute('href')).toMatch(/^https:\/\/docs\.google\.com\/forms\/d\/e\/[\w-]+\/viewform$/);
+    expect(link.target).toBe('_blank');
+    expect(link.rel).toBe('noopener noreferrer');
+  });
+
   it('keeps buttons that lead nowhere yet inert', () => {
     const inert = [...document.querySelectorAll<HTMLButtonElement>('[aria-disabled="true"]')];
-    expect(inert.map((b) => b.textContent)).toEqual(['eng', 'залишити фідбек']);
+    expect(inert.map((b) => b.textContent)).toEqual(['eng']);
     for (const button of inert) {
       const event = new MouseEvent('click', { bubbles: true, cancelable: true });
       button.dispatchEvent(event);
