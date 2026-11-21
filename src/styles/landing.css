@@ -372,7 +372,9 @@ summary::-webkit-details-marker {
 .bullets {
   padding-left: 21px;
 }
-.emo {
+/* emoticons and the name body.log in running text: bold, in the accent (COPY.md rules; L18, Olesia 2026-11-21) */
+.emo,
+.brand {
   color: var(--accent);
   font-weight: 700;
 }

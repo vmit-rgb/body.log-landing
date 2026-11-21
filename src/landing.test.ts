@@ -10,7 +10,7 @@ const PAGES = {
     screens: /^\/screens\/[\w-]+\.webp$/,
     copied: 'промпт 0.1 скопійовано',
     failed: 'не вдалося скопіювати',
-    codeLink: 'код на github',
+    codeLink: 'код на GitHub',
     firstFeature: 'під тебе, а не навпаки',
     firstQuestion: 'хто бачить мої записи?',
   },
@@ -19,7 +19,7 @@ const PAGES = {
     screens: /^\/screens\/en\/[\w-]+\.webp$/,
     copied: 'prompt 0.1 copied',
     failed: "couldn't copy",
-    codeLink: 'code on github',
+    codeLink: 'code on GitHub',
     firstFeature: 'built around you, not the other way round',
     firstQuestion: 'who sees my entries?',
   },
@@ -234,8 +234,8 @@ describe.each(['uk', 'en'] as const)('%s page', (lang) => {
     it('opens the author profiles in a new tab without sending the referrer', () => {
       const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-author-link]')];
       expect(links.map((a) => [a.textContent, a.getAttribute('href')])).toEqual([
-        ['linkedin', 'https://www.linkedin.com/in/kishtanovao/'],
-        ['behance', 'https://www.behance.net/7c29d01a'],
+        ['LinkedIn', 'https://www.linkedin.com/in/kishtanovao/'],
+        ['Behance', 'https://www.behance.net/7c29d01a'],
         [page.codeLink, 'https://github.com/vmit-rgb/body.log'],
       ]);
       for (const link of links) {
