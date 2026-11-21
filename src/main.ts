@@ -8,6 +8,7 @@ import { mountFlight } from './flight';
 import { initLanding } from './landing';
 import { detectPlatform } from './platform';
 import { wireReveal } from './reveal';
+import { wireToTop } from './totop';
 
 initLanding(
   document,
@@ -16,4 +17,5 @@ initLanding(
   window.matchMedia('(min-width: 1024px)').matches,
 );
 mountFlight(document);
+wireToTop(document);
 wireReveal(document, leaveLoading(document, performance.now()));

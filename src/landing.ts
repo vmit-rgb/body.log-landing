@@ -65,34 +65,113 @@ function wireTabs(doc: Document, platform: Platform): void {
   }
 }
 
-type ShowToast = (text: string, emoticon: string) => void;
+/** `timed`: a success goes by itself; an error stays until ×. */
+type ShowToast = (text: string, emoticon: string, timed: boolean) => void;
+
+/** How long a success toast stays, as in the app (body.log src/ui/toast.ts TOAST_MS, Olesia 2026-11-14). */
+export const TOAST_MS = 4000;
+/** A focus that comes this soon after a finger or the mouse went down on the toast is the tap's own. */
+const TAP_FOCUS_MS = 1000;
 
 /**
- * Toast stays until closed with ×: no timer (accessibility decision, 2026-11-08).
+ * The toast, as in the app (body.log src/ui/toast.ts, ACCESSIBILITY.md rule 7):
+ * - a success stays 4 s, and the accent stripe on top melts away meanwhile;
+ * - an error stays until ×;
+ * - it never goes while the pointer or a keyboard focus is on it; when that focus leaves, it goes.
  * It slides in from the top edge (360 ms), the text shows letter by letter, and
- * leaves faster (240 ms), as in the app (MICROINTERACTIONS.md «тост»).
+ * leaves faster (240 ms) (MICROINTERACTIONS.md «тост»).
  */
 function wireToast(doc: Document): ShowToast {
   const toast = required<HTMLElement>(doc, '.toast');
   const body = required<HTMLElement>(doc, '.toast__text');
-  required(doc, '.toast__close').addEventListener('click', () => {
+  let life = required<HTMLElement>(doc, '.toast__life');
+  let timed = false;
+  let leaving = false;
+  let left = 0;
+  let since = 0;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const held = { focus: false, pointer: false };
+
+  function count(): void {
+    clearTimeout(timer);
+    timer = undefined;
+    toast.classList.toggle('toast--held', timed && (held.focus || held.pointer));
+    if (!timed || held.focus || held.pointer) return;
+    since = Date.now();
+    timer = setTimeout(close, left);
+  }
+
+  function pause(): void {
+    if (timer !== undefined) left = Math.max(0, left - (Date.now() - since));
+    count();
+  }
+
+  function close(): void {
+    timed = false;
+    clearTimeout(timer);
+    timer = undefined;
+    // a hidden toast is left without «pointerleave» or «focusout»
+    held.focus = false;
+    held.pointer = false;
+    leaving = true;
     toast.getAnimations?.().forEach((run) => run.cancel());
     const out = play(toast, [{ transform: 'none', opacity: 1 }, { transform: 'translateY(-100%)', opacity: 0 }], { duration: MS.s, easing: EASE.in, fill: 'forwards' });
     whenDone(out, () => {
+      if (!leaving) return; // a new message came while it was leaving
+      leaving = false;
       toast.hidden = true;
       out?.cancel();
     });
+  }
+
+  required(doc, '.toast__close').addEventListener('click', close);
+
+  // a tap on × focuses it too; only a focus brought another way (keyboard, switch) holds the toast
+  let tappedAt = -TAP_FOCUS_MS;
+  toast.addEventListener('pointerdown', () => {
+    tappedAt = Date.now();
   });
-  return (text, emoticon) => {
+  toast.addEventListener('focusin', () => {
+    if (Date.now() - tappedAt < TAP_FOCUS_MS) return;
+    held.focus = true;
+    pause();
+  });
+  toast.addEventListener('focusout', (event) => {
+    if (!held.focus || toast.contains(event.relatedTarget as Node | null)) return;
+    held.focus = false;
+    if (timed) close();
+  });
+  toast.addEventListener('pointerenter', () => {
+    held.pointer = true;
+    pause();
+  });
+  for (const gone of ['pointerleave', 'pointercancel']) {
+    toast.addEventListener(gone, () => {
+      held.pointer = false;
+      count();
+    });
+  }
+
+  return (text, emoticon, isTimed) => {
     const smile = doc.createElement('span');
     smile.className = 'accent';
     smile.textContent = emoticon;
     body.replaceChildren(`${text} `, smile);
-    const coming = toast.hidden;
+    const coming = toast.hidden || leaving;
+    leaving = false;
     toast.getAnimations?.().forEach((run) => run.cancel());
     toast.hidden = false;
     if (coming) play(toast, [{ transform: 'translateY(-100%)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: MS.m, easing: EASE.out });
     typeIn(body);
+    // the stripe is drawn anew, so it melts from full each time
+    const fresh = life.cloneNode() as HTMLElement;
+    fresh.hidden = !isTimed;
+    life.replaceWith(fresh);
+    life = fresh;
+    toast.classList.toggle('toast--timed', isTimed);
+    timed = isTimed;
+    left = TOAST_MS;
+    count();
   };
 }
 
@@ -131,8 +210,8 @@ function wirePrompt(doc: Document, showToast: ShowToast, env: PromptEnv): void {
       ? copyText(env.clipboard, file instanceof Promise ? file.then((f) => f.text) : file.text).then(() => file)
       : Promise.reject(new Error('no clipboard'));
     done.then(
-      (f) => showToast(copied.replace('{version}', f.version), ':)'),
-      () => showToast(failed, '>_<'),
+      (f) => showToast(copied.replace('{version}', f.version), ':)', true),
+      () => showToast(failed, '>_<', false),
     );
   });
 }

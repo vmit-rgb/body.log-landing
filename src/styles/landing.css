@@ -97,6 +97,17 @@ ol {
 .lang__slash {
   color: var(--muted);
 }
+/*
+ * the language on now, as in the app (body.log src/styles/screens.css, Olesia 2026-11-19):
+ * text colour, bold, no underline, nothing to tap. The other one stays an accent link.
+ */
+.lang .link-small[aria-current='page'] {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: default;
+  pointer-events: none;
+}
 
 /* layout */
 .columns {
@@ -572,7 +583,43 @@ summary::-webkit-details-marker {
   padding: 16px var(--pad-screen-x) 24px;
 }
 
-/* toast: screen-wide, accent line on top, closed only with × */
+/*
+ * «вгору», as in the app (body.log src/styles/home.css .to-top, Figma button/to-top 288:10620):
+ * round, accent ring, floats bottom right; on desktop by the right edge of the page
+ */
+.to-top {
+  position: fixed;
+  right: calc(var(--pad-screen-x) + env(safe-area-inset-right));
+  bottom: calc(var(--pad-screen-x) + env(safe-area-inset-bottom));
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap);
+  height: var(--tap);
+  padding: 0;
+  border: var(--stroke-control) solid var(--accent);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--accent);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.to-top[hidden] {
+  display: none;
+}
+.to-top__icon {
+  display: block;
+  width: 25px;
+  height: 25px;
+}
+@media (hover: hover) {
+  .to-top:hover {
+    border-width: 2px;
+  }
+}
+
+/* toast: screen-wide, accent line on top; a success goes in 4 s while the line melts, an error stays until × */
 .toast {
   position: fixed;
   inset: 0 0 auto;
@@ -587,6 +634,36 @@ summary::-webkit-details-marker {
 }
 .toast[hidden] {
   display: none;
+}
+/* a timed toast: the line on top is the stripe that melts (src/landing.ts wireToast) */
+.toast--timed {
+  border-top-color: transparent;
+}
+.toast__life {
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: color-mix(in srgb, var(--accent) 70%, transparent);
+  transform-origin: left;
+}
+.toast__life[hidden] {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .toast__life {
+    animation: toast-life 4s linear forwards;
+  }
+  /* as specific as the rule above, or its `animation` would set the stripe running again */
+  .toast--held .toast__life {
+    animation-play-state: paused;
+  }
+}
+@keyframes toast-life {
+  to {
+    transform: scaleX(0);
+  }
 }
 .toast__text {
   flex: 1;
