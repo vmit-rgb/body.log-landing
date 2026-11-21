@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import ukHtml from '../index.html?raw';
 import enHtml from '../en/index.html?raw';
-import { initLanding, type PromptEnv } from './landing';
+import { initLanding, type PromptEnv, TOAST_MS } from './landing';
+import { wireToTop } from './totop';
 
 const PAGES = {
   uk: {
@@ -43,6 +44,10 @@ beforeEach(() => {
 const tab = (name: string) => document.querySelector<HTMLButtonElement>(`[data-tab="${name}"]`)!;
 const panel = (name: string) => document.querySelector<HTMLElement>(`#steps-${name}`)!;
 const toast = () => document.querySelector<HTMLElement>('.toast')!;
+/** Lets the copy's promises settle without moving the (fake) clock. */
+const settle = async () => {
+  for (let i = 0; i < 20; i++) await Promise.resolve();
+};
 
 describe('install tabs', () => {
   it('opens the steps for the detected iPhone', () => {
@@ -127,7 +132,7 @@ describe.each(['uk', 'en'] as const)('%s page', (lang) => {
   describe('copy prompt', () => {
     beforeEach(() => load('android', false, lang));
 
-    it('copies the prompt and says its version, and the toast stays until closed', async () => {
+    it('copies the prompt and says its version; × closes the toast', async () => {
       document.querySelector<HTMLButtonElement>('[data-copy-prompt]')!.click();
       await vi.waitFor(() => expect(toast().textContent).toContain(`${page.copied} :)`));
       expect(writeText).toHaveBeenCalledWith('You are helping…');
@@ -135,12 +140,74 @@ describe.each(['uk', 'en'] as const)('%s page', (lang) => {
       expect(toast().hidden).toBe(true);
     });
 
-    it('says it could not copy when the prompt does not come', async () => {
+    it('the «copied» toast goes by itself in 4 s, with the melting stripe', async () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] });
+      try {
+        document.querySelector<HTMLButtonElement>('[data-copy-prompt]')!.click();
+        await settle();
+        expect(toast().hidden).toBe(false);
+        expect(toast().querySelector<HTMLElement>('.toast__life')!.hidden).toBe(false);
+        vi.advanceTimersByTime(TOAST_MS - 1);
+        expect(toast().hidden).toBe(false);
+        vi.advanceTimersByTime(1);
+        expect(toast().hidden).toBe(true);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('the toast waits while the pointer is on it', async () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] });
+      try {
+        document.querySelector<HTMLButtonElement>('[data-copy-prompt]')!.click();
+        await settle();
+        expect(toast().hidden).toBe(false);
+        toast().dispatchEvent(new Event('pointerenter'));
+        vi.advanceTimersByTime(TOAST_MS * 2);
+        expect(toast().hidden).toBe(false);
+        toast().dispatchEvent(new Event('pointerleave'));
+        vi.advanceTimersByTime(TOAST_MS);
+        expect(toast().hidden).toBe(true);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('says it could not copy when the prompt does not come, and that stays until ×', async () => {
       loadPrompt.mockRejectedValue(new Error('offline'));
       load('android', false, lang);
       document.querySelector<HTMLButtonElement>('[data-copy-prompt]')!.click();
       await vi.waitFor(() => expect(toast().textContent).toContain(`${page.failed} >_<`));
       expect(writeText).not.toHaveBeenCalled();
+      expect(toast().querySelector<HTMLElement>('.toast__life')!.hidden).toBe(true);
+      vi.useFakeTimers();
+      try {
+        vi.advanceTimersByTime(TOAST_MS * 3);
+        expect(toast().hidden).toBe(false);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+  });
+
+  describe('back to top', () => {
+    beforeEach(() => {
+      load('android', false, lang);
+      Object.defineProperty(window, 'scrollY', { configurable: true, value: 0 });
+      wireToTop(document);
+    });
+
+    it('shows ↑ once the page is scrolled past 500 px and scrolls back to the top', () => {
+      const button = document.querySelector<HTMLButtonElement>('.to-top')!;
+      expect(button.getAttribute('aria-label')).toBe(lang === 'uk' ? 'вгору' : 'back to top');
+      expect(button.hidden).toBe(true);
+      Object.defineProperty(window, 'scrollY', { configurable: true, value: 501 });
+      window.dispatchEvent(new Event('scroll'));
+      expect(button.hidden).toBe(false);
+      const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+      button.click();
+      expect(scrollTo).toHaveBeenCalledWith(expect.objectContaining({ top: 0 }));
+      scrollTo.mockRestore();
     });
   });
 
