@@ -120,10 +120,10 @@ export function readColours(root: Element): Colours {
   const token = (name: string, fallback: string) => style.getPropertyValue(name).trim() || fallback;
   return {
     bg: token('--bg', '#161616'),
-    primary: token('--accent', '#ff719d'),
-    mid: token('--accent-mid', '#c07e8f'),
-    quiet: token('--accent-quiet', '#5d484d'),
-    muted: token('--muted', '#c6b1b6'),
+    primary: token('--accent', '#f573bb'),
+    mid: token('--accent-mid', '#bb7e9d'),
+    quiet: token('--accent-quiet', '#5b4851'),
+    muted: token('--muted', '#c4b1ba'),
   };
 }
 
