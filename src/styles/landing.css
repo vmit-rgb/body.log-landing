@@ -640,51 +640,57 @@ summary::-webkit-details-marker {
   .section {
     padding: 0;
   }
+  /*
+   * Pictures as a second column wherever there are any (Olesia, 2026-11-21):
+   * the hero text on the left, the home screen on the right; the QR card stays
+   * sticky beside the 720 column, so the hero keeps one screen, not three.
+   */
   .section--hero {
-    gap: var(--gap-section);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(180px, 34%, 240px);
+    /* the last text row (the button) takes what the taller screen leaves */
+    grid-template-rows: auto auto auto 1fr;
+    column-gap: 40px;
+    row-gap: var(--gap-section);
+  }
+  .section--hero > :not(.hero__screens) {
+    grid-column: 1;
+  }
+  .section--hero > .button-primary {
+    align-self: start;
   }
   .hero__title {
-    font-size: 50px;
+    /* 50 px at 1440; smaller near 1024, so «підлаштовується» fits beside the screen */
+    font-size: clamp(36px, 3.5vw, 50px);
     font-weight: 660;
     font-stretch: 62%;
   }
   .hero__screens {
-    padding-top: var(--gap-section);
-  }
-  .hero__main,
-  .hero__side {
-    display: block;
-    width: calc((100% - 60px) / 3);
-    max-width: 220px;
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    align-self: start;
   }
   .hero__main {
-    order: 2;
+    width: 100%;
   }
-  .hero__side:last-child {
-    order: 3;
-  }
-  /* features: text on the left, screenshots on the right */
-  .feature__body:not(.feature__body--stack) {
+  /* features: text on the left, screenshots on the right; text-only ones stay stacked */
+  .feature__body:has(> .shots) {
     flex-direction: row;
     align-items: flex-start;
     gap: 40px;
   }
-  .feature__body:not(.feature__body--stack) > .feature__text {
+  .feature__body:has(> .shots) > .feature__text {
     flex: 1 1 0;
     min-width: 0;
   }
-  .feature__body:not(.feature__body--stack) > .shots {
+  .feature__body:has(> .shots) > .shots {
     flex: none;
   }
   .feature__body--stack {
     gap: 40px;
   }
-  .shots--settings {
-    flex-direction: row;
-    justify-content: space-evenly;
-  }
   .settings-scroll {
-    width: 349px;
+    width: 220px;
     background: none;
   }
   .shot--pair {
