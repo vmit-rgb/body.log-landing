@@ -16,6 +16,9 @@
   --surface: color-mix(in srgb, var(--accent) 5%, transparent);
   --sunk: color-mix(in srgb, var(--accent) 10%, transparent);
   --line: color-mix(in srgb, var(--accent) 85%, transparent);
+  /* glass under every block of text over «Політ символів», as in the app (glass.css) */
+  --panel: rgb(18 20 19 / 55%);
+  --glass-blur: blur(4px);
 
   --gap-nano: 2px;
   --gap-micro: 4px;
@@ -42,5 +45,6 @@
     --muted: #705e62;
     --on-accent: #ffffff;
     --warn: #8a5d00;
+    --panel: rgb(255 255 255 / 50%);
   }
 }

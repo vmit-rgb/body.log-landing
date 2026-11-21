@@ -1,5 +1,8 @@
 import { initialTab, type InstallTab } from './install';
 import type { Platform } from './platform';
+import { wireAccordionMotion } from './accordion';
+import { EASE, MS, play, pop, stagger, typeIn, whenDone } from './motion';
+import { tabFlow } from './stripes';
 
 const TABS: readonly InstallTab[] = ['android', 'iphone'];
 const ARROW_KEYS = new Set(['ArrowRight', 'ArrowLeft']);
@@ -30,6 +33,8 @@ function otherTab(current: InstallTab): InstallTab {
 
 function wireTabs(doc: Document, platform: Platform): void {
   const parts = tabParts(doc);
+  const group = required<HTMLElement>(doc, '.tabs');
+  let current = initialTab(platform);
   const select = (selected: InstallTab): void => {
     for (const name of TABS) {
       const isSelected = name === selected;
@@ -38,13 +43,22 @@ function wireTabs(doc: Document, platform: Platform): void {
       parts[name].panel.hidden = !isSelected;
     }
   };
-  select(initialTab(platform));
+  /** A tap or an arrow key: the fill flows to the new tab in stripes, the steps come in one by one. */
+  const switchTo = (next: InstallTab): void => {
+    if (next === current) return;
+    const was = current;
+    current = next;
+    select(next);
+    tabFlow(group, parts[was].tab, parts[next].tab);
+    stagger([...parts[next].panel.children]);
+  };
+  select(current);
   for (const name of TABS) {
-    parts[name].tab.addEventListener('click', () => select(name));
+    parts[name].tab.addEventListener('click', () => switchTo(name));
     parts[name].tab.addEventListener('keydown', (event) => {
       if (!ARROW_KEYS.has(event.key)) return;
       const next = otherTab(name);
-      select(next);
+      switchTo(next);
       parts[next].tab.focus();
     });
   }
@@ -52,19 +66,32 @@ function wireTabs(doc: Document, platform: Platform): void {
 
 type ShowToast = (text: string, emoticon: string) => void;
 
-/** Toast stays until closed with ×: no timer (accessibility decision, 2026-11-08). */
+/**
+ * Toast stays until closed with ×: no timer (accessibility decision, 2026-11-08).
+ * It slides in from the top edge (360 ms), the text shows letter by letter, and
+ * leaves faster (240 ms), as in the app (MICROINTERACTIONS.md «тост»).
+ */
 function wireToast(doc: Document): ShowToast {
   const toast = required<HTMLElement>(doc, '.toast');
   const body = required<HTMLElement>(doc, '.toast__text');
   required(doc, '.toast__close').addEventListener('click', () => {
-    toast.hidden = true;
+    toast.getAnimations?.().forEach((run) => run.cancel());
+    const out = play(toast, [{ transform: 'none', opacity: 1 }, { transform: 'translateY(-100%)', opacity: 0 }], { duration: MS.s, easing: EASE.in, fill: 'forwards' });
+    whenDone(out, () => {
+      toast.hidden = true;
+      out?.cancel();
+    });
   });
   return (text, emoticon) => {
     const smile = doc.createElement('span');
     smile.className = 'accent';
     smile.textContent = emoticon;
     body.replaceChildren(`${text} `, smile);
+    const coming = toast.hidden;
+    toast.getAnimations?.().forEach((run) => run.cancel());
     toast.hidden = false;
+    if (coming) play(toast, [{ transform: 'translateY(-100%)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: MS.m, easing: EASE.out });
+    typeIn(body);
   };
 }
 
@@ -73,7 +100,10 @@ function wirePrompt(doc: Document, showToast: ShowToast): void {
   const button = required<HTMLElement>(doc, '[data-copy-prompt]');
   const text = button.dataset.toast;
   if (!text) throw new Error('landing markup is missing data-toast on [data-copy-prompt]');
-  button.addEventListener('click', () => showToast(text, ':)'));
+  button.addEventListener('click', () => {
+    pop(button, 1.03);
+    showToast(text, ':)');
+  });
 }
 
 /**
@@ -90,5 +120,6 @@ function openAccordions(doc: Document, isWide: boolean): void {
 export function initLanding(doc: Document, platform: Platform, isWide = false): void {
   wireTabs(doc, platform);
   openAccordions(doc, isWide);
+  wireAccordionMotion(doc);
   wirePrompt(doc, wireToast(doc));
 }
