@@ -1,13 +1,14 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import ukHtml from '../index.html?raw';
 import enHtml from '../en/index.html?raw';
-import { initLanding } from './landing';
+import { initLanding, type PromptEnv } from './landing';
 
 const PAGES = {
   uk: {
     html: ukHtml,
     screens: /^\/screens\/[\w-]+\.webp$/,
-    toast: 'промпт ще пишемо',
+    copied: 'промпт 0.1 скопійовано',
+    failed: 'не вдалося скопіювати',
     codeLink: 'код на github',
     firstFeature: 'під тебе, а не навпаки',
     firstQuestion: 'хто бачить мої записи?',
@@ -15,7 +16,8 @@ const PAGES = {
   en: {
     html: enHtml,
     screens: /^\/screens\/en\/[\w-]+\.webp$/,
-    toast: "we're still writing the prompt",
+    copied: 'prompt 0.1 copied',
+    failed: "couldn't copy",
     codeLink: 'code on github',
     firstFeature: 'built around you, not the other way round',
     firstQuestion: 'who sees my entries?',
@@ -23,10 +25,20 @@ const PAGES = {
 } as const;
 type Lang = keyof typeof PAGES;
 
-function load(platform: 'android' | 'iphone' | 'unknown', isWide = false, lang: Lang = 'uk') {
+const PROMPT_URL = 'https://vmit-rgb.github.io/body.log/prompt.json';
+let writeText = vi.fn((_text: string) => Promise.resolve());
+let loadPrompt = vi.fn((_url: string) => Promise.resolve({ version: '0.1', text: 'You are helping…' }));
+const env = (): PromptEnv => ({ load: loadPrompt, clipboard: { writeText } });
+
+function load(platform: 'android' | 'iphone' | 'unknown', isWide = false, lang: Lang = 'uk', prompt: PromptEnv = env()) {
   document.documentElement.innerHTML = PAGES[lang].html.replace(/<script[\s\S]*?<\/script>/g, '');
-  initLanding(document, platform, isWide);
+  initLanding(document, platform, isWide, prompt);
 }
+
+beforeEach(() => {
+  writeText = vi.fn((_text: string) => Promise.resolve());
+  loadPrompt = vi.fn((_url: string) => Promise.resolve({ version: '0.1', text: 'You are helping…' }));
+});
 
 const tab = (name: string) => document.querySelector<HTMLButtonElement>(`[data-tab="${name}"]`)!;
 const panel = (name: string) => document.querySelector<HTMLElement>(`#steps-${name}`)!;
@@ -83,11 +95,29 @@ describe('install tabs', () => {
 });
 
 describe('copy prompt', () => {
-  it('refuses to start when the button has no toast text', () => {
+  it.each([
+    ['toastCopied', 'data-toast-copied'],
+    ['toastFailed', 'data-toast-failed'],
+    ['promptSrc', 'data-prompt-src'],
+  ])('refuses to start when the button has no %s', (key, attribute) => {
     load('android');
     const button = document.querySelector<HTMLElement>('[data-copy-prompt]')!;
-    delete button.dataset.toast;
-    expect(() => initLanding(document, 'android')).toThrow('data-toast');
+    delete button.dataset[key];
+    expect(() => initLanding(document, 'android', false, env())).toThrow(attribute);
+  });
+
+  it('fetches the app prompt as the page opens, once', async () => {
+    load('android');
+    expect(loadPrompt).toHaveBeenCalledWith(PROMPT_URL);
+    document.querySelector<HTMLButtonElement>('[data-copy-prompt]')!.click();
+    await vi.waitFor(() => expect(writeText).toHaveBeenCalledWith('You are helping…'));
+    expect(loadPrompt).toHaveBeenCalledTimes(1);
+  });
+
+  it('says it could not copy when the page has no clipboard', async () => {
+    load('android', false, 'uk', { load: loadPrompt, clipboard: undefined });
+    document.querySelector<HTMLButtonElement>('[data-copy-prompt]')!.click();
+    await vi.waitFor(() => expect(toast().textContent).toContain('не вдалося скопіювати >_<'));
   });
 });
 
@@ -97,12 +127,20 @@ describe.each(['uk', 'en'] as const)('%s page', (lang) => {
   describe('copy prompt', () => {
     beforeEach(() => load('android', false, lang));
 
-    it('says the prompt is still being written, and stays until closed', () => {
+    it('copies the prompt and says its version, and the toast stays until closed', async () => {
       document.querySelector<HTMLButtonElement>('[data-copy-prompt]')!.click();
-      expect(toast().hidden).toBe(false);
-      expect(toast().textContent).toContain(page.toast);
+      await vi.waitFor(() => expect(toast().textContent).toContain(`${page.copied} :)`));
+      expect(writeText).toHaveBeenCalledWith('You are helping…');
       document.querySelector<HTMLButtonElement>('.toast__close')!.click();
       expect(toast().hidden).toBe(true);
+    });
+
+    it('says it could not copy when the prompt does not come', async () => {
+      loadPrompt.mockRejectedValue(new Error('offline'));
+      load('android', false, lang);
+      document.querySelector<HTMLButtonElement>('[data-copy-prompt]')!.click();
+      await vi.waitFor(() => expect(toast().textContent).toContain(`${page.failed} >_<`));
+      expect(writeText).not.toHaveBeenCalled();
     });
   });
 

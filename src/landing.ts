@@ -2,6 +2,7 @@ import { initialTab, type InstallTab } from './install';
 import type { Platform } from './platform';
 import { wireAccordionMotion } from './accordion';
 import { EASE, MS, play, pop, stagger, typeIn, whenDone } from './motion';
+import { type Clip, copyText, fetchPrompt, type LoadPrompt, PromptSource } from './prompt';
 import { tabFlow } from './stripes';
 
 const TABS: readonly InstallTab[] = ['android', 'iphone'];
@@ -95,14 +96,44 @@ function wireToast(doc: Document): ShowToast {
   };
 }
 
-/** The toast text lives in the markup (data-toast), so each language page brings its own. */
-function wirePrompt(doc: Document, showToast: ShowToast): void {
+/** Prompt copying in the page: where the prompt comes from and the clipboard. */
+export interface PromptEnv {
+  readonly load: LoadPrompt;
+  readonly clipboard: Clip | undefined;
+}
+
+const BROWSER: PromptEnv = {
+  load: (url) => fetchPrompt(url),
+  clipboard: globalThis.navigator?.clipboard,
+};
+
+function dataOf(element: HTMLElement, key: string): string {
+  const value = element.dataset[key];
+  if (!value) throw new Error(`landing markup is missing data-${key.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)} on [data-copy-prompt]`);
+  return value;
+}
+
+/**
+ * Copies the app's prompt (src/prompt.ts). The toast texts live in the
+ * markup, so each language page brings its own; «{version}» is the prompt's
+ * version, as the app's toast «промпт 0.1 скопійовано».
+ */
+function wirePrompt(doc: Document, showToast: ShowToast, env: PromptEnv): void {
   const button = required<HTMLElement>(doc, '[data-copy-prompt]');
-  const text = button.dataset.toast;
-  if (!text) throw new Error('landing markup is missing data-toast on [data-copy-prompt]');
+  const copied = dataOf(button, 'toastCopied');
+  const failed = dataOf(button, 'toastFailed');
+  const source = new PromptSource(dataOf(button, 'promptSrc'), env.load);
+  source.warm();
   button.addEventListener('click', () => {
     pop(button, 1.03);
-    showToast(text, ':)');
+    const file = source.get();
+    const done = env.clipboard
+      ? copyText(env.clipboard, file instanceof Promise ? file.then((f) => f.text) : file.text).then(() => file)
+      : Promise.reject(new Error('no clipboard'));
+    done.then(
+      (f) => showToast(copied.replace('{version}', f.version), ':)'),
+      () => showToast(failed, '>_<'),
+    );
   });
 }
 
@@ -117,9 +148,9 @@ function openAccordions(doc: Document, isWide: boolean): void {
   }
 }
 
-export function initLanding(doc: Document, platform: Platform, isWide = false): void {
+export function initLanding(doc: Document, platform: Platform, isWide = false, prompt: PromptEnv = BROWSER): void {
   wireTabs(doc, platform);
   openAccordions(doc, isWide);
   wireAccordionMotion(doc);
-  wirePrompt(doc, wireToast(doc));
+  wirePrompt(doc, wireToast(doc), prompt);
 }

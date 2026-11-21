@@ -50,7 +50,10 @@ afterEach(() => {
 
 function load(): void {
   document.documentElement.innerHTML = ukHtml.replace(/<script[\s\S]*?<\/script>/g, '');
-  initLanding(document, 'android', false);
+  initLanding(document, 'android', false, {
+    load: () => Promise.resolve({ version: '0.1', text: 'prompt' }),
+    clipboard: { writeText: () => Promise.resolve() },
+  });
 }
 
 const second = () => document.querySelectorAll<HTMLDetailsElement>('details[data-accordion]')[1]!;
@@ -118,12 +121,12 @@ describe('install tabs with motion', () => {
 });
 
 describe('toast with motion', () => {
-  it('slides in, then hides only when the slide out ends', () => {
+  it('slides in, then hides only when the slide out ends', async () => {
     load();
     document.querySelector<HTMLButtonElement>('[data-copy-prompt]')!.click();
     const toast = document.querySelector<HTMLElement>('.toast')!;
-    expect(toast.hidden).toBe(false);
-    expect(toast.textContent).toContain('промпт ще пишемо');
+    await vi.waitFor(() => expect(toast.hidden).toBe(false));
+    expect(toast.textContent).toContain('промпт 0.1 скопійовано');
     document.querySelector<HTMLButtonElement>('.toast__close')!.click();
     expect(toast.hidden).toBe(false);
     finishAll();
