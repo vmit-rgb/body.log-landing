@@ -377,9 +377,6 @@ summary::-webkit-details-marker {
   align-items: flex-start;
   gap: var(--gap-group);
 }
-.shot--tall {
-  width: 220px;
-}
 .shot--pair {
   width: calc(50% - var(--gap-items));
   max-width: 171px;
@@ -397,15 +394,39 @@ summary::-webkit-details-marker {
   background: var(--surface);
   text-align: center;
 }
+/*
+ * The phone stands still, only the screen inside scrolls (Olesia, 2026-11-21).
+ * The frame (status bar, 💾 ✕ panel) lies on top; the screen sits in its
+ * transparent window, offsets from landing-screenshots/SETTINGS-SCROLL.md.
+ */
 .settings-scroll__frame {
+  position: relative;
   width: 220px;
-  height: 472px;
+  aspect-ratio: 1272 / 2730;
   margin: 0 auto;
+}
+.settings-scroll__frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/screens/9-settings-frame.webp') center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+.settings-scroll__screen {
+  position: absolute;
+  left: 4.009%;
+  top: 5.824%;
+  width: 91.981%;
+  height: 82.747%;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
+  background: var(--bg);
 }
-.settings-scroll__frame img {
+.settings-scroll__screen:focus-visible {
+  outline-offset: -2px;
+}
+.settings-scroll__screen img {
   display: block;
   width: 100%;
   height: auto;
@@ -661,9 +682,6 @@ summary::-webkit-details-marker {
   .shots--settings {
     flex-direction: row;
     justify-content: space-evenly;
-  }
-  .shots--settings > .shot--tall {
-    margin-top: 12px;
   }
   .settings-scroll {
     width: 349px;

@@ -228,7 +228,7 @@ describe.each(['uk', 'en'] as const)('%s page', (lang) => {
 
     it('describe every screen for screen readers and reserve its size', () => {
       const shots = [...document.querySelectorAll<HTMLImageElement>('img')];
-      expect(shots.length).toBe(11);
+      expect(shots.length).toBe(10);
       for (const img of shots) {
         expect(img.alt.length).toBeGreaterThan(10);
         expect(img.getAttribute('width')).toMatch(/^\d+$/);
@@ -237,10 +237,11 @@ describe.each(['uk', 'en'] as const)('%s page', (lang) => {
       }
     });
 
-    it('lets the keyboard reach the scrolling settings frame', () => {
-      const frame = document.querySelector<HTMLElement>('.settings-scroll__frame')!;
-      expect(frame.tabIndex).toBe(0);
-      expect(frame.getAttribute('aria-labelledby')).toBe('settings-scroll-caption');
+    it('lets the keyboard reach the screen that scrolls inside the still frame', () => {
+      const screen = document.querySelector<HTMLElement>('.settings-scroll__frame > .settings-scroll__screen')!;
+      expect(screen.tabIndex).toBe(0);
+      expect(screen.getAttribute('aria-labelledby')).toBe('settings-scroll-caption');
+      expect(document.querySelector<HTMLElement>('.settings-scroll__frame')!.hasAttribute('tabindex')).toBe(false);
     });
   });
 });
