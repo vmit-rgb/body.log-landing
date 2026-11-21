@@ -65,11 +65,11 @@ export function pop(el: Element | null | undefined, scale = 1.06): void {
   play(el, [{ transform: 'scale(1)' }, { transform: `scale(${scale})`, offset: 0.45 }, { transform: 'scale(1)' }], { duration: MS.s, easing: EASE.spring });
 }
 
-/** The interface assembles before the eyes: items one by one, 40 ms apart, from `rise` px below. */
-export function stagger(items: readonly Element[], rise = 8, duration: number = MS.s): Animation[] {
+/** The interface assembles before the eyes: items one by one, 40 ms apart, from `rise` px below, starting after `after` ms. */
+export function stagger(items: readonly Element[], rise = 8, duration: number = MS.s, after = 0): Animation[] {
   return items.slice(0, 12).flatMap((item, i) => {
     const run = play(item, [{ opacity: 0, transform: `translateY(${rise}px)` }, { opacity: 1, transform: 'none' }], {
-      duration, delay: i * STAGGER_MS, easing: EASE.out, fill: 'backwards',
+      duration, delay: after + i * STAGGER_MS, easing: EASE.out, fill: 'backwards',
     });
     return run ? [run] : [];
   });

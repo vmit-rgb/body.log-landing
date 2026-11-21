@@ -21,14 +21,15 @@ function show(section: Element): void {
   stagger(parts, 12, MS.m);
 }
 
-export function wireReveal(doc: Document): void {
+/** `after`: ms until the loading screen is going (boot.ts); the header and hero start then. */
+export function wireReveal(doc: Document, after = 0): void {
   const main = doc.querySelector('.main');
   if (!main || !canAnimate(main)) return;
   const [hero, ...rest] = [...main.querySelectorAll(':scope > .section')];
   const top = doc.querySelector('.top');
-  stagger([...(top ? [top] : []), ...(hero ? partsOf(hero) : [])], 12, MS.m);
+  stagger([...(top ? [top] : []), ...(hero ? partsOf(hero) : [])], 12, MS.m, after);
   const side = doc.querySelector('.phone-card');
-  if (side) stagger([side], 12, MS.m);
+  if (side) stagger([side], 12, MS.m, after);
 
   if (typeof IntersectionObserver !== 'function') return;
   const seen = new IntersectionObserver((entries) => {
