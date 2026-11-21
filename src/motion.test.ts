@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ukHtml from '../index.html?raw';
+import enHtml from '../en/index.html?raw';
+import { leaveLoading } from './boot';
 import { initLanding } from './landing';
 import { wireReveal } from './reveal';
 
@@ -140,5 +142,34 @@ describe('sections coming into view', () => {
     load();
     wireReveal(document);
     expect(document.querySelectorAll('.fx-waiting')).toHaveLength(0);
+  });
+});
+
+describe('loading screen (as in the app)', () => {
+  it('is in both pages, in their language, with the same two noise layers as the app', () => {
+    for (const [html, text] of [[ukHtml, 'завантажую…'], [enHtml, 'loading…']] as const) {
+      expect(html).toContain(`<span class="ld-t">${text}</span>`);
+      expect(html.match(/<span><b>\|\n\/\n-\n\\<\/b><\/span>/g)).toHaveLength(9);
+      expect(html).toContain('<div class="noise noise--dark" aria-hidden="true"></div>');
+    }
+  });
+
+  it('stays at least 240 ms, then flies apart and melts; the page comes in after it', () => {
+    load();
+    const after = leaveLoading(document, 100);
+    expect(after).toBe(140 + 240);
+    const layer = document.getElementById('loading')!;
+    expect(layer.style.pointerEvents).toBe('none');
+    const spread = runs.find((run) => run.el === layer.querySelector('.ld'));
+    expect(spread?.keyframes[1]).toMatchObject({ transform: 'scale(1.7)', opacity: 0 });
+    finishAll();
+    expect(document.getElementById('loading')).toBeNull();
+  });
+
+  it('is simply gone with «reduce motion»', () => {
+    reduced = true;
+    load();
+    expect(leaveLoading(document, 0)).toBe(0);
+    expect(document.getElementById('loading')).toBeNull();
   });
 });

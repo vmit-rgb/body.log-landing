@@ -12,8 +12,60 @@
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="alternate" hreflang="uk" href="https://vmit-rgb.github.io/body.log-landing/" />
     <link rel="alternate" hreflang="en" href="https://vmit-rgb.github.io/body.log-landing/en/" />
+    <style>
+      /* loading, the same as in the app (body.log index.html, Figma screen/loading 347:9064):
+         here, not in the stylesheets, so it shows before anything else loads; boot.ts takes it away */
+      #loading { position: fixed; inset: 0; z-index: 2147482990; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background: var(--bg, #161616); color: var(--muted, #c6b1b6); font-family: 'Noto Sans Mono', ui-monospace, monospace; animation: ld-away 0s 6s forwards; }
+      #loading .ld { display: flex; gap: 2px; font-size: 30px; line-height: 1; font-weight: 600; color: rgb(255 113 157 / 80%); }
+      #loading .ld > span { display: block; width: 1ch; height: 1.5em; overflow: hidden; }
+      /* the four frames | / - \ one above the other; a cell steps through them every 120 ms, each a step behind the one before */
+      #loading .ld b { display: block; font-weight: inherit; line-height: 1.5em; white-space: pre; animation: ld-spin 480ms steps(4) infinite; }
+      #loading .ld > span:nth-child(4n + 2) b { animation-delay: -360ms; }
+      #loading .ld > span:nth-child(4n + 3) b { animation-delay: -240ms; }
+      #loading .ld > span:nth-child(4n) b { animation-delay: -120ms; }
+      #loading .ld-t { font-size: 12px; }
+      @keyframes ld-spin { to { transform: translateY(-6em); } }
+      /* if the script never comes, the page shows anyway */
+      @keyframes ld-away { to { visibility: hidden; pointer-events: none; } }
+      @media (prefers-color-scheme: light) {
+        #loading { background: #f6f5f7; color: #705e62; }
+        #loading .ld { color: rgb(194 57 106 / 80%); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #loading .ld b { animation: none; }
+      }
+    </style>
+    <noscript><style>#loading { display: none; }</style></noscript>
   </head>
   <body>
+    <div id="loading" role="status"><div class="ld" aria-hidden="true"><span><b>|
+/
+-
+\</b></span><span><b>|
+/
+-
+\</b></span><span><b>|
+/
+-
+\</b></span><span><b>|
+/
+-
+\</b></span><span><b>|
+/
+-
+\</b></span><span><b>|
+/
+-
+\</b></span><span><b>|
+/
+-
+\</b></span><span><b>|
+/
+-
+\</b></span><span><b>|
+/
+-
+\</b></span></div><span class="ld-t">завантажую…</span></div>
     <header class="top">
       <p class="top__title t-body2-bold">body.log</p>
       <nav class="lang" aria-label="мова">
@@ -336,6 +388,7 @@
     </div>
 
     <div class="noise" aria-hidden="true"></div>
+    <div class="noise noise--dark" aria-hidden="true"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

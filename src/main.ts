@@ -3,6 +3,7 @@ import './styles/tokens.css';
 import './styles/landing.css';
 import './styles/glass.css';
 import './styles/motion.css';
+import { leaveLoading } from './boot';
 import { mountFlight } from './flight';
 import { initLanding } from './landing';
 import { detectPlatform } from './platform';
@@ -15,4 +16,4 @@ initLanding(
   window.matchMedia('(min-width: 1024px)').matches,
 );
 mountFlight(document);
-wireReveal(document);
+wireReveal(document, leaveLoading(document, performance.now()));
