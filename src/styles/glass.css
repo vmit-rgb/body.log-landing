@@ -1,0 +1,49 @@
+/*
+ * Glass, as in the app (body.log src/styles/glass.css, Olesia 2026-11-18):
+ * text never sits straight on «Політ символів». Every block of the page
+ * stands on the half-clear panel colour, blurred 4 px, so the glyphs behind
+ * turn into a soft haze. Blocks that already had a tint (features, cards,
+ * the console, the QR card) keep it over the panel.
+ */
+.top,
+.section,
+.phone-card,
+.footer {
+  background: var(--panel);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+.phone-card {
+  background: linear-gradient(var(--surface), var(--surface)), var(--panel);
+}
+.toast {
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+/* the blocks that had no box get some room inside their glass */
+.top {
+  padding-bottom: 12px;
+}
+.section {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.footer {
+  padding-top: 12px;
+}
+/* the header's glass touches the first section's: keep the old 48 px of air between them */
+.columns {
+  padding-top: calc(var(--gap-huge) - 12px);
+}
+
+@media (min-width: 1024px) {
+  /* the glass reaches 16 px past the text, so the text keeps its place on the 720 column */
+  .section {
+    margin: 0 calc(-1 * var(--pad-screen-x));
+    padding: var(--pad-screen-x);
+  }
+  .columns {
+    padding-top: calc(64px - 12px);
+  }
+}

@@ -1,0 +1,112 @@
+/*
+ * Motion of the landing, as in the app (body.log src/styles/motion.css,
+ * MICROINTERACTIONS.md). Durations only from the scale
+ * 120 / 240 / 360 / 420 / 720 / 1200 ms. Moves played from code live in
+ * src/motion.ts, src/accordion.ts, src/stripes.ts and src/reveal.ts.
+ * With the phone's «reduce motion» all of it stays still.
+ */
+
+/* ---- «Політ символів»: the canvas behind the whole page (src/flight.ts) ---- */
+.flight {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  display: block;
+  width: 100%;
+  /* the largest viewport, so a phone's address bar doesn't reshuffle it */
+  height: 100vh;
+  height: 100lvh;
+  pointer-events: none;
+}
+
+/* ---- pressing: buttons, pills and tabs 0.97; text links 1 px down with a thicker underline ---- */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+  .button-primary,
+  .button-pill,
+  .tab,
+  .link-small {
+    transition:
+      transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      text-decoration-thickness 120ms ease-out;
+  }
+  :is(.button-primary, .button-pill, .tab):active {
+    transform: scale(0.97);
+  }
+  .link-small:active {
+    transform: translateY(1px);
+    text-decoration-thickness: 2px;
+  }
+  /* links inside a sentence only thicken: moving them would need inline-block and break the line */
+  .link-inline:active {
+    text-decoration-thickness: 2px;
+  }
+  /* the summary titles: the underline thickens under the finger, like a text button */
+  :is(.feature__trigger, .faq__trigger):active :is(.feature__title, .faq__question) {
+    text-decoration-thickness: 2px;
+  }
+}
+
+/* ---- + → − by ASCII frames (src/motion.ts glyphs): drawn over the bars, so nothing shifts ---- */
+.icon-pm[data-g]::before {
+  content: attr(data-g);
+  width: auto;
+  height: auto;
+  background: none;
+  color: var(--accent);
+  font-size: calc(var(--bar) * 1.6);
+  font-weight: 700;
+  line-height: 1;
+}
+.icon-pm[data-g]::after {
+  visibility: hidden;
+}
+/* folding (src/accordion.ts): already + while the body leaves */
+details[open].fx-closing > summary .icon-pm::after {
+  transform: translate(-50%, -50%);
+}
+
+/* ---- the glint of an accordion: a faint accent gradient runs down the body ---- */
+details[data-accordion] {
+  position: relative;
+}
+.fx-glint {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 30px;
+  pointer-events: none;
+  background: linear-gradient(transparent, color-mix(in srgb, var(--accent) 12%, transparent), transparent);
+  opacity: 0;
+}
+
+/* ---- the install tabs switch in stripes (src/stripes.ts): the stripes lie under the labels,
+   the tabs' own fill steps aside while they run ---- */
+.tabs {
+  position: relative;
+}
+.tabs.fx-run {
+  isolation: isolate;
+}
+.tabs.fx-run > .tab {
+  background: transparent;
+}
+.fx-stripes {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.fx-stripes > i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+/* ---- a section waiting to come into view (src/reveal.ts) ---- */
+.fx-waiting {
+  opacity: 0;
+}
