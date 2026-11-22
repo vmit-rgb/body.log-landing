@@ -36,7 +36,8 @@ describe.each(['uk', 'en'] as const)('%s page: install step', (lang) => {
     for (const name of ['android', 'iphone']) {
       const panel = document.querySelector<HTMLElement>(`#steps-${name}`)!;
       expect(panel.getAttribute('role')).toBe('tabpanel');
-      const [steps, demo, go] = [...panel.children];
+      // beta 1.1.1: the iPhone tab ends with a line about «Здоровʼя» under the button
+      const [steps, demo, go] = [...panel.children].filter((child) => !child.classList.contains('tab-panel__health'));
       expect(steps!.tagName).toBe('OL');
       expect((demo as HTMLElement).dataset.installDemo).toBe(name);
       expect(go!.classList.contains('button-primary')).toBe(true);
