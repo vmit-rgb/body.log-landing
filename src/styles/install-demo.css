@@ -616,30 +616,34 @@
   transition: background var(--t1);
 }
 
-/* the iPhone's iOS 26 / older switch, in the page's tokens: an outlined pill, 48 px to press */
+/*
+ * the iPhone's iOS 26 / older switch: third-order text buttons, like «укр / eng»
+ * (Olesia, 2026-11-22: a filled pill drew the eye too much). The chosen one bold
+ * in the text colour, the other in the accent and underlined; 48 px to press.
+ */
 .install-demo .demo-seg {
   display: flex;
   flex: none;
   flex-direction: column;
-  border: var(--stroke-control) solid var(--line);
-  /* a vertical pill: the ends round like the tabs' pills, half of the 48 px */
-  border-radius: calc(var(--tap) / 2);
-  overflow: hidden;
+  align-items: flex-start;
 }
 .install-demo .demo-seg button {
   min-height: var(--tap);
-  padding: 4px 12px;
+  padding: 4px 8px;
   border: 0;
   background: none;
   color: var(--accent);
   font: inherit;
   font-size: 14px;
+  text-decoration: underline;
+  text-underline-position: from-font;
   cursor: pointer;
 }
 .install-demo .demo-seg button[aria-pressed='true'] {
-  background: var(--accent);
-  color: var(--on-accent);
+  color: var(--ink);
   font-weight: 700;
+  text-decoration: none;
+  cursor: default;
 }
 .install-demo button:focus-visible {
   outline: 2px solid var(--accent);
