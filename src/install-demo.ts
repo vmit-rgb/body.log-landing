@@ -296,8 +296,10 @@ function makePlayer(card: HTMLElement, first: Variant): DemoPlayer {
   const moveFinger = (el: HTMLElement) => {
     const s = screen.getBoundingClientRect();
     const r = el.getBoundingClientRect();
-    finger.style.left = `${r.left - s.left + r.width / 2}px`;
-    finger.style.top = `${r.top - s.top + r.height / 2}px`;
+    // narrow screens draw the phone smaller (zoom): measured pixels back to the phone's own
+    const scale = screen.offsetWidth ? s.width / screen.offsetWidth : 1;
+    finger.style.left = `${(r.left - s.left + r.width / 2) / scale}px`;
+    finger.style.top = `${(r.top - s.top + r.height / 2) / scale}px`;
   };
 
   async function play(k: number): Promise<void> {

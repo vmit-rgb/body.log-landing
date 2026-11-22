@@ -111,11 +111,13 @@ describe.each(['uk', 'en'] as const)('B4: the install animation, %s', (lang) => 
     }
   });
 
-  it('puts the iOS switch above the phone (Olesia, 2026-11-22)', () => {
+  // the layout (the phone in one place, the switch to its right, centred) is CSS, which jsdom
+  // doesn't lay out: checked in headless Chrome at 375 px on 2026-11-22
+  it('gives only the iPhone the iOS switch, next to the same phone', () => {
     mount();
-    const iphone = document.querySelector('[data-install-demo="iphone"]')!;
-    expect(iphone.firstElementChild!.classList.contains('demo-seg')).toBe(true);
-    expect(iphone.firstElementChild!.nextElementSibling!.classList.contains('stage')).toBe(true);
+    expect(document.querySelector('[data-install-demo="iphone"] .demo-seg')).not.toBeNull();
+    expect(document.querySelector('[data-install-demo="android"] .demo-seg')).toBeNull();
+    for (const name of ['android', 'iphone']) expect(document.querySelector(`[data-install-demo="${name}"] .stage`)).not.toBeNull();
   });
 
   it('pauses on a tap on the phone, or Enter, and goes on from the same step', async () => {
