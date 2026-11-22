@@ -183,6 +183,78 @@ function controls(say: (w: Words) => string, withVariants: boolean): string {
     : '';
 }
 
+/*
+ * The iPhone switch changes in stripes like the android / iphone tabs (stripes.ts
+ * tabFlow; MICROINTERACTIONS.md «таби експорту»; Olesia, 2026-11-22): the accent fill
+ * breaks into uneven stripes of the light neutral, they thin out and gather under the
+ * other button; the labels change colour halfway. 360 ms: each stripe 270 and up to
+ * 90 later by its place. The buttons stand one above the other, so the stripes lie across.
+ */
+const STRIPE_LAG = 90;
+const STRIPE_RUN = 270;
+
+/** Uneven sizes, wide and narrow bars mixed, as in the tabs. */
+function stripeCuts(n: number): { start: number; size: number }[] {
+  const sizes = Array.from({ length: n }, () => 0.55 + Math.random() * 1.1);
+  const sum = sizes.reduce((a, b) => a + b, 0);
+  let at = 0;
+  return sizes.map((size) => {
+    const cut = { start: at / sum, size: size / sum };
+    at += size;
+    return cut;
+  });
+}
+
+/** The light neutral of the tabs' stripes: ink and page, 72 : 28. */
+function stripeTone(css: CSSStyleDeclaration): string {
+  const hex = (value: string) => (/^#[0-9a-f]{6}$/i.test(value) ? [1, 3, 5].map((i) => parseInt(value.slice(i, i + 2), 16)) : null);
+  const ink = hex(css.getPropertyValue('--ink').trim());
+  const bg = hex(css.getPropertyValue('--bg').trim());
+  if (!ink || !bg) return 'rgb(185 179 189)';
+  return `rgb(${ink.map((v, i) => Math.round(v * 0.72 + bg[i]! * 0.28)).join(' ')})`;
+}
+
+/** `from` was chosen, `to` is now (call after aria-pressed changed): the fill flows from one to the other. */
+function switchStripes(group: HTMLElement, from: HTMLElement, to: HTMLElement): void {
+  if (typeof group.animate !== 'function') return;
+  group.querySelector(':scope > .demo-stripes')?.remove();
+  const height = group.offsetHeight || 1;
+  const over = (el: HTMLElement) => (y: number) => y * height >= el.offsetTop && y * height <= el.offsetTop + el.offsetHeight;
+  const [was, will] = [over(from), over(to)];
+  const accent = getComputedStyle(group).getPropertyValue('--accent').trim();
+  const tone = stripeTone(getComputedStyle(document.documentElement));
+  const down = to.offsetTop > from.offsetTop;
+  const box = document.createElement('span');
+  box.className = 'demo-stripes';
+  box.setAttribute('aria-hidden', 'true');
+  group.append(box);
+  group.classList.add('demo-run');
+  const n = Math.max(6, Math.round(height / 12));
+  const runs = stripeCuts(n).map(({ start, size }) => {
+    const stripe = document.createElement('i');
+    stripe.style.top = `${start * 100}%`;
+    stripe.style.height = `${size * 100 + 0.3}%`;
+    box.append(stripe);
+    const mid = start + size / 2;
+    const thin = (least: number, spread: number) => `scaleY(${(least + Math.random() * spread).toFixed(2)})`;
+    return stripe.animate([
+      { backgroundColor: accent, opacity: was(mid) ? 1 : 0, transform: 'scaleY(1)' },
+      { backgroundColor: tone, opacity: 1, transform: thin(0.5, 0.35), offset: 0.35 },
+      { backgroundColor: tone, opacity: 1, transform: thin(0.25, 0.35), offset: 0.7 },
+      { backgroundColor: accent, opacity: will(mid) ? 1 : 0, transform: 'scaleY(1)' },
+    ], { duration: STRIPE_RUN, delay: Math.round((down ? mid : 1 - mid) * STRIPE_LAG), easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', fill: 'both' });
+  });
+  void Promise.all(runs.map((run) => run.finished.catch(() => undefined))).then(() => {
+    if (!box.isConnected) return;
+    box.remove();
+    group.classList.remove('demo-run');
+  });
+  const [off, on] = [getComputedStyle(from).color, getComputedStyle(to).color];
+  const swap = (el: HTMLElement, a: string, b: string) => el.animate([{ color: a }, { color: a, offset: 0.5 }, { color: b, offset: 0.51 }, { color: b }], { duration: STRIPE_LAG + STRIPE_RUN });
+  swap(to, off, on);
+  swap(from, on, off);
+}
+
 export interface DemoPlayer {
   /** Plays from the start while its tab is shown; stops when it is hidden. */
   show(on: boolean): void;
@@ -270,9 +342,11 @@ function makePlayer(card: HTMLElement, first: Variant): DemoPlayer {
   }
 
   card.querySelectorAll<HTMLButtonElement>('button[data-variant]').forEach((button) => button.addEventListener('click', () => {
+    const was = card.querySelector<HTMLElement>('button[data-variant][aria-pressed="true"]');
     variant = button.dataset.variant as Variant;
     phone.dataset.variant = variant;
     card.querySelectorAll('button[data-variant]').forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
+    if (was && was !== button) switchStripes(button.parentElement!, was, button);
     void play(0);
   }));
 
