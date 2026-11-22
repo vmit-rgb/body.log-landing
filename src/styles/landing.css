@@ -287,6 +287,21 @@ ol {
 .steps {
   padding-left: 1.6em;
 }
+/*
+ * Beta 1.0.1 (FIXES-1.0.1.md, B1, B4; Olesia, 2026-11-22): a tab holds the text steps,
+ * the drawn phone under them and «перейти в застосунок», the page's first-order button.
+ */
+.tab-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-section);
+}
+.tab-panel[hidden] {
+  display: none;
+}
+.tab-panel .steps {
+  margin: 0;
+}
 
 /* +/− icon shared by every accordion: 48 px box, bars 11 px (faq) or 14 px (feature) */
 .icon-pm {
@@ -774,6 +789,10 @@ summary::-webkit-details-marker {
   }
   .shot--pair {
     width: 171px;
+  }
+  /* B1: on a computer the QR card leads to the app; the app doesn't install there */
+  .tab-panel__go {
+    display: none;
   }
   .step__hint {
     display: none;

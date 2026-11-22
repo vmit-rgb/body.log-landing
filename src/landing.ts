@@ -4,6 +4,10 @@ import { wireAccordionMotion } from './accordion';
 import { EASE, MS, play, pop, stagger, typeIn, whenDone } from './motion';
 import { type Clip, copyText, fetchPrompt, type LoadPrompt, PromptSource } from './prompt';
 import { tabFlow } from './stripes';
+import type { DemoPlayer } from './install-demo';
+
+/** The install animations, one per tab (install-demo.ts); none in tests that don't need them. */
+type Demos = Partial<Record<InstallTab, DemoPlayer>>;
 
 const TABS: readonly InstallTab[] = ['android', 'iphone'];
 const ARROW_KEYS = new Set(['ArrowRight', 'ArrowLeft']);
@@ -32,7 +36,7 @@ function otherTab(current: InstallTab): InstallTab {
   return current === 'android' ? 'iphone' : 'android';
 }
 
-function wireTabs(doc: Document, platform: Platform): void {
+function wireTabs(doc: Document, platform: Platform, demos: Demos): void {
   const parts = tabParts(doc);
   const group = required<HTMLElement>(doc, '.tabs');
   let current = initialTab(platform);
@@ -42,6 +46,8 @@ function wireTabs(doc: Document, platform: Platform): void {
       parts[name].tab.setAttribute('aria-selected', String(isSelected));
       parts[name].tab.tabIndex = isSelected ? 0 : -1;
       parts[name].panel.hidden = !isSelected;
+      // only the shown tab's phone plays (B4)
+      demos[name]?.show(isSelected);
     }
   };
   /** A tap or an arrow key: the fill flows to the new tab in stripes, the steps come in one by one. */
@@ -51,7 +57,8 @@ function wireTabs(doc: Document, platform: Platform): void {
     current = next;
     select(next);
     tabFlow(group, parts[was].tab, parts[next].tab);
-    stagger([...parts[next].panel.children]);
+    // the steps one by one, then the phone and «перейти в застосунок»
+    stagger([...parts[next].panel.querySelectorAll<HTMLElement>(':scope > ol > li, :scope > :not(ol)')]);
   };
   select(current);
   for (const name of TABS) {
@@ -227,8 +234,8 @@ function openAccordions(doc: Document, isWide: boolean): void {
   }
 }
 
-export function initLanding(doc: Document, platform: Platform, isWide = false, prompt: PromptEnv = BROWSER): void {
-  wireTabs(doc, platform);
+export function initLanding(doc: Document, platform: Platform, isWide = false, prompt: PromptEnv = BROWSER, demos: Demos = {}): void {
+  wireTabs(doc, platform, demos);
   openAccordions(doc, isWide);
   wireAccordionMotion(doc);
   wirePrompt(doc, wireToast(doc), prompt);

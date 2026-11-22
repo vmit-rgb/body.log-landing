@@ -251,21 +251,31 @@
 
           <div class="step">
             <h3 class="step__title"><span class="step__n" aria-hidden="true">1.</span><span>install it on your phone</span></h3>
+            <p class="t-body2 step__what"><b class="brand">body.log</b> isn't from the App Store or Google Play: you install it straight from the browser. you'll get an icon on your phone, and it works offline. it won't install from Instagram or a messenger — open the link in Chrome or Safari first.</p>
             <div class="tabs" role="tablist" aria-label="your phone">
               <button type="button" class="tab" role="tab" id="tab-android" aria-controls="steps-android" aria-selected="true" data-tab="android">android</button>
               <button type="button" class="tab" role="tab" id="tab-iphone" aria-controls="steps-iphone" aria-selected="false" data-tab="iphone" tabindex="-1">iphone</button>
             </div>
-            <ol class="steps t-body1" id="steps-android" role="tabpanel" aria-labelledby="tab-android">
-              <li>open the <a class="link-inline" href="%VITE_APP_URL%" data-app-link>app</a> in Chrome.</li>
-              <li>menu ⋮ → “install app”.</li>
-              <li>open the app from your home screen — everything else happens there.</li>
-            </ol>
-            <ol class="steps t-body1" id="steps-iphone" role="tabpanel" aria-labelledby="tab-iphone" hidden>
-              <li>open the <a class="link-inline" href="%VITE_APP_URL%" data-app-link>app</a> in Safari.</li>
-              <li>“share” → “add to home screen”.</li>
-              <li>open the app from your home screen — everything else happens there.</li>
-            </ol>
             <p class="t-body3 muted step__hint">the phone was detected automatically. if it's the wrong one, switch.</p>
+            <div class="tab-panel" id="steps-android" role="tabpanel" aria-labelledby="tab-android">
+              <ol class="steps t-body1">
+                <li>open the <a class="link-inline" href="%VITE_APP_URL%?lang=en" data-app-link>app</a> in Chrome.</li>
+                <li>tap “install” in the app, or menu ⋮ → “install app”.</li>
+                <li>open the app from your home screen — everything else happens there.</li>
+              </ol>
+              <div data-install-demo="android"></div>
+              <a class="button-primary tab-panel__go" href="%VITE_APP_URL%?lang=en" data-app-link>go to the app</a>
+            </div>
+            <div class="tab-panel" id="steps-iphone" role="tabpanel" aria-labelledby="tab-iphone" hidden>
+              <ol class="steps t-body1">
+                <li>open the <a class="link-inline" href="%VITE_APP_URL%?lang=en" data-app-link>app</a> in Safari.</li>
+                <li>tap ⋯ (on older iphones, ⍐ at the bottom) → “share” → “add to home screen”.</li>
+                <li>leave the “open as web app” switch on → “add”.</li>
+                <li>open the app from your home screen — everything else happens there.</li>
+              </ol>
+              <div data-install-demo="iphone"></div>
+              <a class="button-primary tab-panel__go" href="%VITE_APP_URL%?lang=en" data-app-link>go to the app</a>
+            </div>
           </div>
 
           <div class="step">
@@ -379,7 +389,7 @@
     </div>
 
     <footer class="footer t-body3">
-      <p class="muted">body.log · beta 1.0</p>
+      <p class="muted">body.log · beta 1.0.1</p>
       <p class="muted">© 2026 (Olesia + Nytka / AI) · all rights reserved</p>
     </footer>
 
