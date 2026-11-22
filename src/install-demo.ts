@@ -5,7 +5,8 @@
  * (Olesia: the animation has no captions of its own); the phone is aria-hidden.
  * Known and allowed (Olesia): the system menus' item names may differ from a
  * real phone, iOS 26's ⋯ is drawn on the right.
- * «reduce motion»: nothing plays by itself, «далі →» walks the steps.
+ * No pause / next / restart buttons (Olesia, 2026-11-22): «перейти в застосунок»
+ * comes right under the phone. «reduce motion»: no phones, the text is enough.
  */
 
 export type DemoLang = 'uk' | 'en';
@@ -81,12 +82,7 @@ const W = {
   webApp: { uk: 'відкрити як вебзастосунок', en: 'open as web app' },
   leaveOn: { uk: '> лиши увімкненим', en: '> leave it on' },
   loading: { uk: 'завантажую…', en: 'loading…' },
-  pause: { uk: '‖ пауза', en: '‖ pause' },
-  play: { uk: '▶ грати', en: '▶ play' },
-  next: { uk: 'далі →', en: 'next →' },
-  restart: { uk: '↻ спочатку', en: '↻ restart' },
   older: { uk: 'старіша', en: 'older' },
-  controls: { uk: 'анімація встановлення', en: 'install animation' },
   version: { uk: 'версія iOS', en: 'iOS version' },
 } satisfies Record<string, Words>;
 
@@ -177,17 +173,14 @@ function iphonePhone(say: (w: Words) => string, icon: string): string {
     </div></div>`;
 }
 
-/** The demo's own buttons; the iPhone one also picks iOS 26 or older. */
+/**
+ * The iPhone's iOS 26 / older switch. No pause / next / restart (Olesia, 2026-11-22:
+ * «перейти в застосунок» comes right under the phone instead).
+ */
 function controls(say: (w: Words) => string, withVariants: boolean): string {
-  const variants = withVariants
+  return withVariants
     ? `<div class="demo-seg" role="group" aria-label="${say(W.version)}"><button type="button" data-variant="ios26" aria-pressed="true">iOS 26</button><button type="button" data-variant="old" aria-pressed="false">${say(W.older)}</button></div>`
     : '';
-  return `${variants}
-    <div class="demo-ctrl" role="group" aria-label="${say(W.controls)}">
-      <button type="button" data-act="pause">${say(W.pause)}</button>
-      <button type="button" data-act="next">${say(W.next)}</button>
-      <button type="button" data-act="restart">${say(W.restart)}</button>
-    </div>`;
 }
 
 export interface DemoPlayer {
@@ -195,12 +188,7 @@ export interface DemoPlayer {
   show(on: boolean): void;
 }
 
-interface PlayerEnv {
-  reducedMotion: boolean;
-  say: (w: Words) => string;
-}
-
-function makePlayer(card: HTMLElement, first: Variant, { reducedMotion, say }: PlayerEnv): DemoPlayer {
+function makePlayer(card: HTMLElement, first: Variant): DemoPlayer {
   const q = <T extends Element>(selector: string) => card.querySelector<T>(selector)!;
   const phone = q<HTMLElement>('.phone');
   const screen = q<HTMLElement>('.screen');
@@ -209,16 +197,13 @@ function makePlayer(card: HTMLElement, first: Variant, { reducedMotion, say }: P
   const list = card.querySelector<HTMLElement>('.sh-list');
   const hint = card.querySelector<HTMLElement>('.hint');
   const splashLayer = q<HTMLElement>('.splash');
-  const pauseButton = q<HTMLButtonElement>('[data-act="pause"]');
   let variant: Variant = first;
-  let at = 0;
   /** Each play gets a number; an older one stops at its next wait. */
   let run = 0;
-  let paused = reducedMotion;
   let shown = false;
 
   const steps = () => FLOWS[variant];
-  const wait = (ms: number, mine: number) => new Promise<boolean>((done) => setTimeout(() => done(mine === run && shown), reducedMotion ? 0 : ms));
+  const wait = (ms: number, mine: number) => new Promise<boolean>((done) => setTimeout(() => done(mine === run && shown), ms));
   const setLayers = (names: readonly string[]) => {
     card.querySelectorAll<HTMLElement>('.layer').forEach((layer) => layer.classList.toggle('on', names.includes(layer.dataset.l!)));
   };
@@ -235,7 +220,6 @@ function makePlayer(card: HTMLElement, first: Variant, { reducedMotion, say }: P
 
   async function play(k: number): Promise<void> {
     const mine = ++run;
-    at = k;
     clearHits();
     splashLayer.classList.remove('melt');
     const step = steps()[k]!;
@@ -273,7 +257,6 @@ function makePlayer(card: HTMLElement, first: Variant, { reducedMotion, say }: P
       finger.classList.remove('press');
       if (!await wait(T.t6, mine)) return;
     }
-    if (paused) return;
     if (k < steps().length - 1) return play(k + 1);
     // the app opens on its real loading screen, the spinner melts (body.log ui/boot.ts), and it starts over
     finger.classList.remove('show');
@@ -283,25 +266,15 @@ function makePlayer(card: HTMLElement, first: Variant, { reducedMotion, say }: P
     splashLayer.classList.add('melt');
     if (!await wait(T.t3 + T.t5, mine)) return;
     splashLayer.classList.remove('melt');
-    if (!paused) void play(0);
+    void play(0);
   }
 
-  function setPaused(next: boolean): void {
-    paused = next;
-    pauseButton.textContent = say(next ? W.play : W.pause);
-    if (!next) void play(at);
-  }
-
-  pauseButton.addEventListener('click', () => setPaused(!paused));
-  q('[data-act="next"]').addEventListener('click', () => void play((at + 1) % steps().length));
-  q('[data-act="restart"]').addEventListener('click', () => void play(0));
   card.querySelectorAll<HTMLButtonElement>('button[data-variant]').forEach((button) => button.addEventListener('click', () => {
     variant = button.dataset.variant as Variant;
     phone.dataset.variant = variant;
     card.querySelectorAll('button[data-variant]').forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
     void play(0);
   }));
-  pauseButton.textContent = say(paused ? W.play : W.pause);
 
   return {
     show(on) {
@@ -320,15 +293,23 @@ export interface DemoEnv {
   icon: string;
 }
 
-/** Fills every `[data-install-demo="android|iphone"]` with its phone; returns a player per tab. */
+/**
+ * Fills every `[data-install-demo="android|iphone"]` with its phone; returns a player per tab.
+ * With «reduce motion» there are no phones at all: without «далі →» a still phone would
+ * show only the first step, and the text above says every step (Нитка's choice, 2026-11-22).
+ */
 export function mountInstallDemos(doc: Document, { lang, reducedMotion, icon }: DemoEnv): Partial<Record<'android' | 'iphone', DemoPlayer>> {
   const say = (w: Words) => w[lang];
   const players: Partial<Record<'android' | 'iphone', DemoPlayer>> = {};
   for (const host of doc.querySelectorAll<HTMLElement>('[data-install-demo]')) {
+    if (reducedMotion) {
+      host.remove();
+      continue;
+    }
     const which = host.dataset.installDemo === 'iphone' ? 'iphone' : 'android';
     host.classList.add('install-demo');
     host.innerHTML = `<div class="stage">${which === 'iphone' ? iphonePhone(say, icon) : androidPhone(say, icon)}</div>${controls(say, which === 'iphone')}`;
-    players[which] = makePlayer(host, which === 'iphone' ? 'ios26' : 'android', { reducedMotion, say });
+    players[which] = makePlayer(host, which === 'iphone' ? 'ios26' : 'android');
   }
   return players;
 }

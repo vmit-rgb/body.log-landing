@@ -615,22 +615,14 @@
   transition: background var(--t1);
 }
 
-/* the demo's own buttons, in the page's tokens: small outlined pills, 48 px to press */
-.install-demo .demo-seg,
-.install-demo .demo-ctrl {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--gap-items);
-}
+/* the iPhone's iOS 26 / older switch, in the page's tokens: an outlined pill, 48 px to press */
 .install-demo .demo-seg {
+  display: flex;
   border: var(--stroke-control) solid var(--line);
   border-radius: 999px;
   overflow: hidden;
-  gap: 0;
 }
-.install-demo .demo-seg button,
-.install-demo .demo-ctrl button {
+.install-demo .demo-seg button {
   min-height: var(--tap);
   padding: 4px 14px;
   border: 0;
@@ -639,10 +631,6 @@
   font: inherit;
   font-size: 14px;
   cursor: pointer;
-}
-.install-demo .demo-ctrl button {
-  border: var(--stroke-control) solid var(--line);
-  border-radius: 999px;
 }
 .install-demo .demo-seg button[aria-pressed='true'] {
   background: var(--accent);

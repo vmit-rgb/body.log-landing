@@ -7,8 +7,8 @@ import { mountInstallDemos, type DemoPlayer } from './install-demo';
 /* Beta 1.0.1 (FIXES-1.0.1.md, section B; Olesia, 2026-11-22). */
 
 const PAGES = {
-  uk: { html: ukHtml, go: 'перейти в застосунок', older: 'старіша', pause: '‖ пауза', play: '▶ грати', install: 'встановити застосунок' },
-  en: { html: enHtml, go: 'go to the app', older: 'older', pause: '‖ pause', play: '▶ play', install: 'install app' },
+  uk: { html: ukHtml, go: 'перейти в застосунок', older: 'старіша', install: 'встановити застосунок' },
+  en: { html: enHtml, go: 'go to the app', older: 'older', install: 'install app' },
 } as const;
 type Lang = keyof typeof PAGES;
 
@@ -93,13 +93,22 @@ describe.each(['uk', 'en'] as const)('B4: the install animation, %s', (lang) => 
     }
   });
 
-  it('speaks the page\'s language inside the phone and on its buttons', () => {
+  it('speaks the page\'s language inside the phone and on the iPhone switch', () => {
     mount();
     const android = document.querySelector('[data-install-demo="android"]')!;
     expect(android.querySelector('[data-t="a-install"]')!.textContent).toBe(page.install);
-    expect(android.querySelector('[data-act="pause"]')!.textContent).toBe(page.pause);
     expect(document.querySelector('[data-install-demo="iphone"] [data-variant="old"]')!.textContent).toBe(page.older);
     expect(android.querySelector('button[data-variant]')).toBeNull();
+  });
+
+  it('has no pause / next / restart: «перейти в застосунок» comes right under the phone (Olesia, 2026-11-22)', () => {
+    mount();
+    for (const name of ['android', 'iphone']) {
+      const demo = document.querySelector<HTMLElement>(`[data-install-demo="${name}"]`)!;
+      expect(demo.querySelector('[data-act]')).toBeNull();
+      expect(demo.nextElementSibling!.textContent).toBe(page.go);
+      expect(demo.nextElementSibling!.classList.contains('button-primary')).toBe(true);
+    }
   });
 
   it('switches the iPhone between iOS 26 and older', () => {
@@ -126,19 +135,15 @@ describe.each(['uk', 'en'] as const)('B4: the install animation, %s', (lang) => 
     expect(on()).toEqual(['page', 'scrim', 'menu']);
   });
 
-  it('with «reduce motion» stands still until «далі →»', async () => {
-    vi.useFakeTimers();
+  it('with «reduce motion» draws no phones: the text steps and the button stay', () => {
     const demos = mount(true);
-    const android = document.querySelector('[data-install-demo="android"]')!;
-    const on = () => [...android.querySelectorAll<HTMLElement>('.layer.on')].map((layer) => layer.dataset.l);
-    demos.android!.show(true);
-    expect(android.querySelector('[data-act="pause"]')!.textContent).toBe(page.play);
-    await vi.advanceTimersByTimeAsync(20_000);
-    expect(on()).toEqual(['page']);
-    android.querySelector<HTMLButtonElement>('[data-act="next"]')!.click();
-    expect(on()).toEqual(['page']);
-    android.querySelector<HTMLButtonElement>('[data-act="next"]')!.click();
-    expect(on()).toEqual(['page', 'scrim', 'menu']);
+    expect(document.querySelector('[data-install-demo]')).toBeNull();
+    expect(demos).toEqual({});
+    for (const name of ['android', 'iphone']) {
+      const panel = document.querySelector(`#steps-${name}`)!;
+      expect(panel.querySelector('ol')).not.toBeNull();
+      expect(panel.querySelector('.button-primary')!.textContent).toBe(page.go);
+    }
   });
 });
 
