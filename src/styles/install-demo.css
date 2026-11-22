@@ -16,10 +16,10 @@
   --sys: #2b2b2e;
   --sys-2: #3a3a3e;
   --sys-line: rgb(255 255 255 / 10%);
-  /* the iPhone's switch stands to the right of the phone, level with its bottom bar (Olesia, 2026-11-22) */
+  /* the iPhone's switch stands above the phone (Olesia, 2026-11-22) */
   display: flex;
-  justify-content: center;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: center;
   gap: var(--gap-items);
 }
 .install-demo * {
@@ -625,7 +625,6 @@
   position: relative;
   display: flex;
   flex: none;
-  flex-direction: column;
   border: var(--stroke-control) solid var(--line);
   border-radius: 18px;
 }
@@ -641,25 +640,16 @@
   cursor: pointer;
 }
 .install-demo .demo-seg button:first-child {
-  border-radius: 17px 17px 0 0;
+  border-radius: 17px 0 0 17px;
 }
 .install-demo .demo-seg button:last-child {
-  border-radius: 0 0 17px 17px;
+  border-radius: 0 17px 17px 0;
 }
-/* 6 px more to press on the outer side of each button: 48 in all, no overlap in the middle */
+/* 6 px more to press above and below each button: 48 in all */
 .install-demo .demo-seg button::after {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
-}
-.install-demo .demo-seg button:first-child::after {
-  top: -12px;
-  bottom: 0;
-}
-.install-demo .demo-seg button:last-child::after {
-  top: 0;
-  bottom: -12px;
+  inset: -6px 0;
 }
 .install-demo .demo-seg button[aria-pressed='true'] {
   background: var(--accent);
@@ -683,8 +673,36 @@
 }
 .install-demo .demo-stripes i {
   position: absolute;
-  left: 0;
-  right: 0;
+}
+
+/* a tap on the phone pauses it: ▶ in the middle while it stands, the spinner stands too */
+.install-demo .stage {
+  position: relative;
+  border-radius: 40px;
+  cursor: pointer;
+}
+.install-demo .stage:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.install-demo .stage[aria-pressed='true']::after {
+  content: '▶';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 60%);
+  color: #f573bb;
+  font-size: 22px;
+  pointer-events: none;
+}
+.install-demo .stage[aria-pressed='true'] .ld b {
+  animation-play-state: paused;
 }
 .install-demo button:focus-visible {
   outline: 2px solid var(--accent);

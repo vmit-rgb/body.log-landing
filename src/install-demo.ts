@@ -83,6 +83,7 @@ const W = {
   leaveOn: { uk: '> лиши увімкненим', en: '> leave it on' },
   loading: { uk: 'завантажую…', en: 'loading…' },
   older: { uk: 'старіша', en: 'older' },
+  pause: { uk: 'пауза анімації', en: 'pause the animation' },
   version: { uk: 'версія iOS', en: 'iOS version' },
 } satisfies Record<string, Words>;
 
@@ -188,7 +189,7 @@ function controls(say: (w: Words) => string, withVariants: boolean): string {
  * tabFlow; MICROINTERACTIONS.md «таби експорту»; Olesia, 2026-11-22): the accent fill
  * breaks into uneven stripes of the light neutral, they thin out and gather under the
  * other button; the labels change colour halfway. 360 ms: each stripe 270 and up to
- * 90 later by its place. The buttons stand one above the other, so the stripes lie across.
+ * 90 later by its place. Side by side the stripes stand upright, one above the other they lie across.
  */
 const STRIPE_LAG = 90;
 const STRIPE_RUN = 270;
@@ -218,30 +219,36 @@ function stripeTone(css: CSSStyleDeclaration): string {
 function switchStripes(group: HTMLElement, from: HTMLElement, to: HTMLElement): void {
   if (typeof group.animate !== 'function') return;
   group.querySelector(':scope > .demo-stripes')?.remove();
-  const height = group.offsetHeight || 1;
-  const over = (el: HTMLElement) => (y: number) => y * height >= el.offsetTop && y * height <= el.offsetTop + el.offsetHeight;
+  const across = from.offsetTop !== to.offsetTop;
+  const startOf = (el: HTMLElement) => (across ? el.offsetTop : el.offsetLeft);
+  const sizeOf = (el: HTMLElement) => (across ? el.offsetHeight : el.offsetWidth);
+  const length = (across ? group.offsetHeight : group.offsetWidth) || 1;
+  const scale = across ? 'scaleY' : 'scaleX';
+  const over = (el: HTMLElement) => (p: number) => p * length >= startOf(el) && p * length <= startOf(el) + sizeOf(el);
   const [was, will] = [over(from), over(to)];
   const accent = getComputedStyle(group).getPropertyValue('--accent').trim();
   const tone = stripeTone(getComputedStyle(document.documentElement));
-  const down = to.offsetTop > from.offsetTop;
+  const down = startOf(to) > startOf(from);
   const box = document.createElement('span');
   box.className = 'demo-stripes';
   box.setAttribute('aria-hidden', 'true');
   group.append(box);
   group.classList.add('demo-run');
-  const n = Math.max(6, Math.round(height / 12));
+  const n = Math.max(6, Math.round(length / 12));
   const runs = stripeCuts(n).map(({ start, size }) => {
     const stripe = document.createElement('i');
-    stripe.style.top = `${start * 100}%`;
-    stripe.style.height = `${size * 100 + 0.3}%`;
+    stripe.style[across ? 'top' : 'left'] = `${start * 100}%`;
+    stripe.style[across ? 'height' : 'width'] = `${size * 100 + 0.3}%`;
+    stripe.style[across ? 'left' : 'top'] = '0';
+    stripe.style[across ? 'right' : 'bottom'] = '0';
     box.append(stripe);
     const mid = start + size / 2;
-    const thin = (least: number, spread: number) => `scaleY(${(least + Math.random() * spread).toFixed(2)})`;
+    const thin = (least: number, spread: number) => `${scale}(${(least + Math.random() * spread).toFixed(2)})`;
     return stripe.animate([
-      { backgroundColor: accent, opacity: was(mid) ? 1 : 0, transform: 'scaleY(1)' },
+      { backgroundColor: accent, opacity: was(mid) ? 1 : 0, transform: `${scale}(1)` },
       { backgroundColor: tone, opacity: 1, transform: thin(0.5, 0.35), offset: 0.35 },
       { backgroundColor: tone, opacity: 1, transform: thin(0.25, 0.35), offset: 0.7 },
-      { backgroundColor: accent, opacity: will(mid) ? 1 : 0, transform: 'scaleY(1)' },
+      { backgroundColor: accent, opacity: will(mid) ? 1 : 0, transform: `${scale}(1)` },
     ], { duration: STRIPE_RUN, delay: Math.round((down ? mid : 1 - mid) * STRIPE_LAG), easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', fill: 'both' });
   });
   void Promise.all(runs.map((run) => run.finished.catch(() => undefined))).then(() => {
@@ -273,9 +280,12 @@ function makePlayer(card: HTMLElement, first: Variant): DemoPlayer {
   /** Each play gets a number; an older one stops at its next wait. */
   let run = 0;
   let shown = false;
+  /** The step on screen, and whether a tap on the phone paused it (Olesia, 2026-11-22). */
+  let at = 0;
+  let paused = false;
 
   const steps = () => FLOWS[variant];
-  const wait = (ms: number, mine: number) => new Promise<boolean>((done) => setTimeout(() => done(mine === run && shown), ms));
+  const wait = (ms: number, mine: number) => new Promise<boolean>((done) => setTimeout(() => done(mine === run && shown && !paused), ms));
   const setLayers = (names: readonly string[]) => {
     card.querySelectorAll<HTMLElement>('.layer').forEach((layer) => layer.classList.toggle('on', names.includes(layer.dataset.l!)));
   };
@@ -292,6 +302,7 @@ function makePlayer(card: HTMLElement, first: Variant): DemoPlayer {
 
   async function play(k: number): Promise<void> {
     const mine = ++run;
+    at = k;
     clearHits();
     splashLayer.classList.remove('melt');
     const step = steps()[k]!;
@@ -341,6 +352,21 @@ function makePlayer(card: HTMLElement, first: Variant): DemoPlayer {
     void play(0);
   }
 
+  // a tap on the phone (or Enter / Space on it) pauses and goes on from the same step: WCAG 2.2.2
+  const stage = q<HTMLElement>('.stage');
+  const setPaused = (next: boolean) => {
+    paused = next;
+    stage.setAttribute('aria-pressed', String(next));
+    if (next) run++;
+    else void play(at);
+  };
+  stage.addEventListener('click', () => setPaused(!paused));
+  stage.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    setPaused(!paused);
+  });
+
   card.querySelectorAll<HTMLButtonElement>('button[data-variant]').forEach((button) => button.addEventListener('click', () => {
     const was = card.querySelector<HTMLElement>('button[data-variant][aria-pressed="true"]');
     variant = button.dataset.variant as Variant;
@@ -382,7 +408,7 @@ export function mountInstallDemos(doc: Document, { lang, reducedMotion, icon }: 
     }
     const which = host.dataset.installDemo === 'iphone' ? 'iphone' : 'android';
     host.classList.add('install-demo');
-    host.innerHTML = `<div class="stage">${which === 'iphone' ? iphonePhone(say, icon) : androidPhone(say, icon)}</div>${controls(say, which === 'iphone')}`;
+    host.innerHTML = `${controls(say, which === 'iphone')}<div class="stage" role="button" tabindex="0" aria-pressed="false" aria-label="${say(W.pause)}">${which === 'iphone' ? iphonePhone(say, icon) : androidPhone(say, icon)}</div>`;
     players[which] = makePlayer(host, which === 'iphone' ? 'ios26' : 'android');
   }
   return players;

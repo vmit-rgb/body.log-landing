@@ -111,6 +111,36 @@ describe.each(['uk', 'en'] as const)('B4: the install animation, %s', (lang) => 
     }
   });
 
+  it('puts the iOS switch above the phone (Olesia, 2026-11-22)', () => {
+    mount();
+    const iphone = document.querySelector('[data-install-demo="iphone"]')!;
+    expect(iphone.firstElementChild!.classList.contains('demo-seg')).toBe(true);
+    expect(iphone.firstElementChild!.nextElementSibling!.classList.contains('stage')).toBe(true);
+  });
+
+  it('pauses on a tap on the phone, or Enter, and goes on from the same step', async () => {
+    vi.useFakeTimers();
+    const demos = mount();
+    const android = document.querySelector('[data-install-demo="android"]')!;
+    const stage = android.querySelector<HTMLElement>('.stage')!;
+    const on = () => [...android.querySelectorAll<HTMLElement>('.layer.on')].map((layer) => layer.dataset.l);
+    expect(stage.getAttribute('role')).toBe('button');
+    expect(stage.tabIndex).toBe(0);
+    expect(stage.getAttribute('aria-label')).toBe(lang === 'uk' ? 'пауза анімації' : 'pause the animation');
+    demos.android!.show(true);
+    await vi.advanceTimersByTimeAsync(4300);
+    expect(on()).toEqual(['page', 'scrim', 'menu']);
+    stage.click();
+    expect(stage.getAttribute('aria-pressed')).toBe('true');
+    await vi.advanceTimersByTimeAsync(20_000);
+    expect(on()).toEqual(['page', 'scrim', 'menu']);
+    stage.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    expect(stage.getAttribute('aria-pressed')).toBe('false');
+    expect(on()).toEqual(['page', 'scrim', 'menu']);
+    await vi.advanceTimersByTimeAsync(4000);
+    expect(on()).toEqual(['page', 'scrim', 'dialog']);
+  });
+
   it('switches the iPhone between iOS 26 and older', () => {
     mount();
     const iphone = document.querySelector('[data-install-demo="iphone"]')!;
