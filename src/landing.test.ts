@@ -224,11 +224,12 @@ describe.each(['uk', 'en'] as const)('%s page', (lang) => {
       expect(page.html).toContain(`<html lang="${lang}">`);
     });
 
-    it('sends every install link to the app', () => {
+    it('sends every install link to the app, in the page\'s language', () => {
       const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-app-link]')];
-      // Both install tabs; the hero button leads to the start block instead.
-      expect(links.length).toBe(2);
-      for (const link of links) expect(link.getAttribute('href')).toBe('%VITE_APP_URL%');
+      // Each install tab: the link in step 1 and «перейти в застосунок»; the hero button leads to the start block instead.
+      expect(links.length).toBe(4);
+      const url = lang === 'uk' ? '%VITE_APP_URL%' : '%VITE_APP_URL%?lang=en';
+      for (const link of links) expect(link.getAttribute('href')).toBe(url);
     });
 
     it('opens the author profiles in a new tab without sending the referrer', () => {

@@ -251,21 +251,31 @@
 
           <div class="step">
             <h3 class="step__title"><span class="step__n" aria-hidden="true">1.</span><span>встанови на телефон</span></h3>
+            <p class="t-body2 step__what"><b class="brand">body.log</b> не з App Store чи Google Play: він ставиться прямо з браузера. на телефоні зʼявиться іконка, і застосунок працюватиме без інтернету. з Instagram чи месенджера не встановиться — спершу відкрий посилання в Chrome або Safari.</p>
             <div class="tabs" role="tablist" aria-label="твій телефон">
               <button type="button" class="tab" role="tab" id="tab-android" aria-controls="steps-android" aria-selected="true" data-tab="android">андроїд</button>
               <button type="button" class="tab" role="tab" id="tab-iphone" aria-controls="steps-iphone" aria-selected="false" data-tab="iphone" tabindex="-1">айфон</button>
             </div>
-            <ol class="steps t-body1" id="steps-android" role="tabpanel" aria-labelledby="tab-android">
-              <li>відкрий <a class="link-inline" href="%VITE_APP_URL%" data-app-link>застосунок</a> у Chrome.</li>
-              <li>меню ⋮ → «встановити застосунок».</li>
-              <li>відкрий застосунок з головного екрана — далі все там.</li>
-            </ol>
-            <ol class="steps t-body1" id="steps-iphone" role="tabpanel" aria-labelledby="tab-iphone" hidden>
-              <li>відкрий <a class="link-inline" href="%VITE_APP_URL%" data-app-link>застосунок</a> у Safari.</li>
-              <li>«поділитися» → «на початковий екран».</li>
-              <li>відкрий застосунок з головного екрана й налаштовуй уже там, не в Safari.</li>
-            </ol>
             <p class="t-body3 muted step__hint">телефон визначено автоматично. якщо не той — перемкни.</p>
+            <div class="tab-panel" id="steps-android" role="tabpanel" aria-labelledby="tab-android">
+              <ol class="steps t-body1">
+                <li>відкрий <a class="link-inline" href="%VITE_APP_URL%" data-app-link>застосунок</a> у Chrome.</li>
+                <li>натисни «встановити» в застосунку або меню ⋮ → «встановити застосунок».</li>
+                <li>відкрий застосунок з головного екрана — далі все там.</li>
+              </ol>
+              <div data-install-demo="android"></div>
+              <a class="button-primary tab-panel__go" href="%VITE_APP_URL%" data-app-link>перейти в застосунок</a>
+            </div>
+            <div class="tab-panel" id="steps-iphone" role="tabpanel" aria-labelledby="tab-iphone" hidden>
+              <ol class="steps t-body1">
+                <li>відкрий <a class="link-inline" href="%VITE_APP_URL%" data-app-link>застосунок</a> у Safari.</li>
+                <li>натисни ⋯ (на старіших айфонах — ⍐ унизу) → «поділитися» → «на початковий екран».</li>
+                <li>перемикач «відкрити як вебзастосунок» лиши увімкненим → «додати».</li>
+                <li>відкрий застосунок з головного екрана й налаштовуй уже там, не в Safari.</li>
+              </ol>
+              <div data-install-demo="iphone"></div>
+              <a class="button-primary tab-panel__go" href="%VITE_APP_URL%" data-app-link>перейти в застосунок</a>
+            </div>
           </div>
 
           <div class="step">
@@ -379,7 +389,7 @@
     </div>
 
     <footer class="footer t-body3">
-      <p class="muted">body.log · бета 1.0</p>
+      <p class="muted">body.log · бета 1.0.1</p>
       <p class="muted">© 2026 (Олеся + Нитка / AI) · усі права захищено</p>
     </footer>
 
