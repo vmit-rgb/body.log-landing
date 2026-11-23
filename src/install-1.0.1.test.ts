@@ -64,9 +64,9 @@ describe.each(['uk', 'en'] as const)('%s page: install step', (lang) => {
     expect(document.querySelectorAll('#steps-iphone li')).toHaveLength(4);
   });
 
-  it('shows the version of the app in the footer: beta 1.2.2 since 2026-11-23 (Olesia)', () => {
+  it('shows the version of the app in the footer: beta 1.2.3 since 2026-11-23 (Olesia)', () => {
     load(lang);
-    expect(document.querySelector('.footer')!.textContent).toContain(lang === 'uk' ? 'бета 1.2.2' : 'beta 1.2.2');
+    expect(document.querySelector('.footer')!.textContent).toContain(lang === 'uk' ? 'бета 1.2.3' : 'beta 1.2.3');
   });
 });
 
