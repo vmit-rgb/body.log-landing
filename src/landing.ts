@@ -161,7 +161,8 @@ function wireToast(doc: Document): ShowToast {
 
   return (text, emoticon, isTimed) => {
     const smile = doc.createElement('span');
-    smile.className = 'accent';
+    // bold and in the accent, as every emoticon on the page (.emo; Olesia, 2026-11-23, beta 1.2.4)
+    smile.className = 'emo';
     smile.textContent = emoticon;
     body.replaceChildren(`${text} `, smile);
     const coming = toast.hidden || leaving;
