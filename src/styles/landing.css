@@ -625,10 +625,17 @@ summary::-webkit-details-marker {
 .to-top[hidden] {
   display: none;
 }
+/* the glyph is ASCII «/\», in the 25 px box the icon had (Olesia, 2026-11-23, beta 1.2.4) */
 .to-top__icon {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 25px;
   height: 25px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.08em;
 }
 @media (hover: hover) {
   .to-top:hover {
