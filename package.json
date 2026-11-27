@@ -2,6 +2,7 @@
   "name": "body.log-landing",
   "version": "0.9.0",
   "private": true,
+  "license": "AGPL-3.0-only",
   "description": "Landing page of body.log.",
   "type": "module",
   "engines": {
